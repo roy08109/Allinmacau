@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All in Macau - 澳门一站式旅游助手</title>
+    <!-- Tailwind CSS (Official CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue 3 (Local Fallback) -->
+    <script src="js/vue.global.js"></script>
+    <script>
+        // Fallback if local file fails (unlikely in this setup)
+        if (typeof Vue === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"><\/script>');
+        }
+    </script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        macau: {
+                            blue: '#0047AB', 
+                            gold: '#FFD700', 
+                            red: '#DE2910',  
+                            cream: '#F5F5DC', 
+                        },
+                        theme: {
+                            bg: '#0F0F13',      // Deep dark background
+                            surface: '#1E1E2D',  // Card background
+                            border: '#2D2D3F',   // Border color
+                            primary: '#6366F1',  // Indigo
+                            accent: '#8B5CF6',   // Purple
+                            text: {
+                                main: '#FFFFFF',
+                                muted: '#9CA3AF'
+                            }
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-primary': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+                        'gradient-dark': 'linear-gradient(to bottom right, #0F0F13, #181825)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Loading State */
+        .app-loading {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0F0F13;
+            z-index: 9999;
+            font-family: sans-serif;
+            color: #8B5CF6;
+        }
+        [v-cloak] { display: none !important; }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        body {
+            background-color: #050509;
+        }
+    </style>
+</head>
+<body class="bg-theme-bg text-gray-100 font-sans antialiased min-h-screen flex flex-col">
+    <div id="loading" class="app-loading">
+        <div class="flex flex-col items-center gap-4">
+            <i class="ph-duotone ph-spinner-gap animate-spin text-4xl"></i>
+            <div class="text-sm font-medium tracking-wider uppercase opacity-80">Loading Experience</div>
+        </div>
+    </div>
+    
+    <!-- App Container - Full Width -->
+    <div id="app" v-cloak class="flex flex-col w-full min-h-screen bg-theme-bg relative">
+        
+        <!-- Header & Navigation -->
+        <header class="sticky top-0 z-50 bg-theme-bg/90 backdrop-blur-md border-b border-theme-border">
+            <div class="max-w-5xl mx-auto w-full px-5 py-4 flex items-center justify-between">
+                <!-- Logo Area -->
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-gradient-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                        <i class="ph-bold ph-lotus text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg tracking-tight text-white leading-none">All in Macau</h1>
+                        <span class="text-[10px] text-theme-text-muted font-medium">Travel Assistant</span>
+                    </div>
+                </div>
+
+                <!-- Language Switcher -->
+                <div class="relative">
+                    <button @click="showLangMenu = !showLangMenu" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-theme-surface border border-theme-border hover:border-theme-primary/50 transition-all text-xs font-medium text-gray-300">
+                        <span>{{ currentLangLabel }}</span>
+                        <i class="ph-bold ph-caret-down text-theme-primary"></i>
+                    </button>
+                    <!-- Dropdown -->
+                    <div v-if="showLangMenu" class="absolute right-0 top-full mt-2 w-32 bg-theme-surface rounded-xl shadow-xl border border-theme-border overflow-hidden py-1 z-50 animate-fade-in-down">
+                        <button v-for="(label, key) in languages" :key="key" @click="switchLang(key)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/5 text-gray-300 hover:text-white transition-colors flex items-center justify-between">
+                            {{ label }}
+                            <i v-if="currentLang === key" class="ph-bold ph-check text-theme-primary text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation (Scrollable) -->
+            <div class="border-b border-theme-border/50">
+                <nav class="max-w-5xl mx-auto w-full flex overflow-x-auto scrollbar-hide px-2 pb-0">
+                    <button 
+                        v-for="tab in tabs" 
+                        :key="tab.id"
+                        @click="currentTab = tab.id"
+                        :class="[
+                            'flex-shrink-0 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-300 relative',
+                            currentTab === tab.id 
+                                ? 'border-theme-primary text-white' 
+                                : 'border-transparent text-gray-500 hover:text-gray-300'
+                        ]"
+                    >
+                        {{ t(tab.labelKey) }}
+                        <!-- Glow effect for active tab -->
+                        <span v-if="currentTab === tab.id" class="absolute bottom-0 left-0 right-0 h-0.5 bg-theme-primary shadow-[0_0_10px_rgba(99,102,241,0.7)]"></span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-theme-bg relative">
+            <!-- Dynamic Component Loading based on Tab -->
+            <div class="max-w-5xl mx-auto w-full p-5 space-y-6 pb-28">
+                
+                <!-- Placeholder for dynamic content -->
+                <div v-if="loading" class="flex flex-col items-center justify-center py-20 text-gray-400">
+                    <i class="ph-duotone ph-spinner-gap animate-spin text-3xl mb-2"></i>
+                    <p class="text-xs">Loading resources...</p>
+                </div>
+
+                <template v-else>
+                   
+                   <!-- Home Tab -->
+                   <div v-if="currentTab === 'home'" class="animate-fade-in space-y-8">
+                        
+                        <!-- Search Bar -->
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="ph-bold ph-magnifying-glass text-gray-500 group-focus-within:text-theme-primary transition-colors text-lg"></i>
+                            </div>
+                            <input type="text" v-model="searchQuery" :placeholder="t('search_placeholder')" class="block w-full pl-11 pr-4 py-4 bg-theme-surface border border-theme-border rounded-2xl leading-5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-theme-primary/50 focus:border-theme-primary transition-all shadow-lg text-sm">
+                        </div>
+
+                        <!-- Quick Categories -->
+                        <div class="grid grid-cols-4 gap-4">
+                            <button v-for="cat in quickCategories" :key="cat.id" @click="currentTab = cat.id" class="flex flex-col items-center gap-2 group">
+                                <div class="w-14 h-14 rounded-2xl bg-theme-surface border border-theme-border flex items-center justify-center text-theme-muted shadow-lg group-hover:scale-110 group-hover:border-theme-primary/50 group-hover:text-theme-primary transition-all duration-300 relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-theme-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <i :class="['ph-fill text-2xl relative z-10', cat.icon]"></i>
+                                </div>
+                                <span class="text-[10px] font-medium text-gray-400 group-hover:text-white transition-colors">{{ t(cat.labelKey) }}</span>
+                            </button>
+                        </div>
+
+                        <!-- Weather Widget (Mock) -->
+                        <div class="bg-gradient-to-br from-theme-primary to-theme-accent rounded-3xl p-6 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                            <div class="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full blur-2xl -ml-6 -mb-6"></div>
+                            
+                            <div class="relative z-10 flex justify-between items-start">
+                                <div>
+                                    <div class="text-xs font-bold uppercase tracking-wider opacity-80 mb-1">Macau, Cotai</div>
+                                    <div class="text-4xl font-bold mb-1">26°C</div>
+                                    <div class="text-sm font-medium opacity-90">Partly Cloudy</div>
+                                </div>
+                                <i class="ph-duotone ph-cloud-sun text-5xl opacity-90"></i>
+                            </div>
+                            
+                            <div class="relative z-10 mt-6 flex gap-4 text-xs font-medium opacity-80">
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-drop"></i>
+                                    <span>82%</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-wind"></i>
+                                    <span>12km/h</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trending / Featured (Mock) -->
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between px-1">
+                                <h3 class="text-lg font-bold text-white">Trending Now</h3>
+                                <button class="text-xs font-medium text-theme-primary hover:text-white transition-colors">View All</button>
+                            </div>
+                            
+                            <!-- Horizontal Scroll -->
+                            <div class="flex overflow-x-auto gap-4 pb-4 -mx-5 px-5 scrollbar-hide">
+                                <div v-for="i in 3" :key="i" class="flex-shrink-0 w-64 bg-theme-surface rounded-2xl overflow-hidden border border-theme-border shadow-lg relative group">
+                                    <div class="h-32 bg-gray-800 relative">
+                                        <img :src="`https://images.unsplash.com/photo-1557310023-57c25b331669?w=400&q=80`" class="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity">
+                                        <div class="absolute top-2 right-2 bg-black/50 backdrop-blur-md px-2 py-1 rounded-lg text-[10px] font-bold text-white border border-white/10">
+                                            POPULAR
+                                        </div>
+                                    </div>
+                                    <div class="p-3">
+                                        <h4 class="font-bold text-white text-sm mb-1">Macau Light Festival</h4>
+                                        <div class="flex items-center gap-1 text-[10px] text-gray-400">
+                                            <i class="ph-fill ph-clock"></i>
+                                            <span>Ends in 2 days</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+
+                   <!-- Concerts Tab -->
+                 <div v-if="currentTab === 'concerts'" class="columns-2 gap-4 animate-fade-in space-y-4">
+                      <div v-for="concert in appData.concerts" :key="concert.id" class="break-inside-avoid bg-theme-surface rounded-2xl overflow-hidden shadow-lg border border-theme-border group flex flex-col h-auto hover:border-theme-primary/50 transition-all duration-300">
+                          <div class="relative w-full aspect-[16/10]">
+                              <img :src="concert.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
+                              <!-- Gradient Overlay -->
+                              <div class="absolute inset-0 bg-gradient-to-t from-theme-surface via-transparent to-transparent opacity-60"></div>
+                          </div>
+                          
+                          <div class="flex-1 p-4 flex flex-col gap-3">
+                              <div>
+                                  <h3 class="font-bold text-white line-clamp-2 text-sm leading-snug mb-1">{{ dt(concert.title) }}</h3>
+                              </div>
+                              
+                              <!-- Content Wrapper -->
+                              <div class="flex flex-col flex-1 gap-2">
+                                  <div class="flex flex-col gap-1.5 items-start">
+                                      <div v-for="(d, i) in (Array.isArray(concert.date) ? concert.date : [concert.date])" :key="i" class="bg-white/5 text-gray-300 border border-white/10 text-[10px] font-medium px-2 py-1 rounded-md flex items-center gap-1.5 backdrop-blur-sm">
+                                          <i class="ph-bold ph-calendar-blank text-theme-primary"></i>
+                                          {{ d }}
+                                      </div>
+                                  </div>
+                                  
+                                  <div class="flex items-center gap-1.5 text-xs text-gray-400 mt-1 transform scale-[1.3] origin-left ml-1">
+                                      <i class="ph-fill ph-map-pin text-theme-accent"></i>
+                                      <span class="line-clamp-1">{{ dt(concert.venue) }}</span>
+                                  </div>
+  
+                                  <div class="mt-auto pt-3 flex flex-col gap-3">
+                                      <div class="flex flex-wrap gap-1.5">
+                                           <span v-for="(p, i) in (Array.isArray(concert.price) ? concert.price : [concert.price])" :key="i" class="text-[10px] font-bold text-theme-accent bg-theme-accent/10 px-2 py-1 rounded border border-theme-accent/20">
+                                              {{ p }}
+                                           </span>
+                                      </div>
+                                      
+                                      <!-- Media Links (Compact) -->
+                                      <div v-if="concert.media && concert.media.length > 0" class="flex flex-wrap gap-2">
+                                          <a v-for="(link, i) in concert.media" :key="i" :href="link.url" target="_blank" class="flex items-center justify-center w-7 h-7 bg-white/5 rounded-full text-theme-primary hover:bg-theme-primary hover:text-white transition-all border border-white/10" :title="link.label">
+                                              <i class="ph-bold ph-play-circle text-sm"></i>
+                                          </a>
+                                      </div>
+  
+                                      <button @click="openModal('concert', concert)" class="w-full bg-gradient-primary text-white text-[10px] font-bold py-2 rounded-lg hover:shadow-lg hover:shadow-indigo-500/30 transition-all transform active:scale-95 tracking-wide uppercase">
+                                          {{ t('btn_details') || 'Details' }}
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                 </div>
+
+                   <!-- Food Tab -->
+                   <div v-if="currentTab === 'food'" class="space-y-6 animate-fade-in">
+                        <!-- Food Categories -->
+                        <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                            <button v-for="cat in appData.food.categories" :key="cat.id" class="px-4 py-1.5 rounded-full bg-white border border-gray-200 text-sm whitespace-nowrap text-gray-600 shadow-sm">
+                                {{ dt(cat.label) }}
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div v-for="item in appData.food.items" :key="item.id" class="flex bg-white rounded-xl p-3 shadow-sm border border-gray-100 gap-3">
+                                <img :src="item.image" class="w-24 h-24 rounded-lg object-cover flex-shrink-0 bg-gray-100">
+                                <div class="flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 text-sm">{{ dt(item.name) }}</h3>
+                                        <p class="text-xs text-gray-500 line-clamp-1 mt-1">{{ dt(item.location) }}</p>
+                                    </div>
+                                    <div class="bg-orange-50 text-orange-700 text-xs p-2 rounded-lg mt-2">
+                                        <span class="font-bold">Must Try:</span> {{ dt(item.dish) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+
+                   <!-- Attractions Tab -->
+                   <div v-if="currentTab === 'attractions'" class="space-y-4 animate-fade-in">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div v-for="attraction in appData.attractions" :key="attraction.id" @click="openModal('attraction', attraction)" class="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative h-48 cursor-pointer group">
+                                <img :src="attraction.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-3">
+                                    <h3 class="text-white font-bold text-sm">{{ dt(attraction.name) }}</h3>
+                                    <p class="text-white/80 text-xs line-clamp-1">{{ dt(attraction.desc) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+
+                   <!-- Transport Tab -->
+                   <div v-if="currentTab === 'transport'" class="space-y-6 animate-fade-in">
+                        <!-- Border Crossing -->
+                        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-macau-blue mb-3 flex items-center gap-2">
+                                <i class="ph-fill ph-passport"></i> {{ t('transport_border') || 'Border Crossing' }}
+                            </h3>
+                            <div class="space-y-2 text-sm text-gray-600">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
+                                    <span>Gongbei / Border Gate</span>
+                                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">06:00 - 01:00</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
+                                    <span>Hengqin Port</span>
+                                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">24 Hours</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shuttle Bus (Free) -->
+                        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-macau-gold mb-3 flex items-center gap-2">
+                                <i class="ph-fill ph-bus"></i> {{ t('transport_shuttle') || 'Free Shuttle Bus' }}
+                            </h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="text-xs text-gray-500 uppercase bg-gray-50">
+                                        <tr>
+                                            <th class="px-3 py-2">Route</th>
+                                            <th class="px-3 py-2">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(route, index) in appData.transport.shuttle" :key="index" class="border-b border-gray-50">
+                                            <td class="px-3 py-2 font-medium text-gray-800">{{ dt(route.route) }}</td>
+                                            <td class="px-3 py-2 text-xs text-gray-500">
+                                                <div>{{ route.time }}</div>
+                                                <div class="text-macau-blue">{{ route.freq }}</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                   </div>
+
+                   <!-- Shopping Tab -->
+                   <div v-if="currentTab === 'shopping'" class="space-y-4 animate-fade-in">
+                        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-gray-800 mb-2">Popular Districts</h3>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li class="flex items-center gap-2"><i class="ph-fill ph-bag text-macau-blue"></i> The Venetian Grand Canal Shoppes</li>
+                                <li class="flex items-center gap-2"><i class="ph-fill ph-bag text-macau-blue"></i> Galaxy Promenade</li>
+                            </ul>
+                        </div>
+                   </div>
+
+                   <!-- Hotels Tab -->
+                   <div v-if="currentTab === 'hotels'" class="space-y-4 animate-fade-in">
+                        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-gray-800 mb-2">Featured Stays</h3>
+                            <div class="text-sm text-gray-500">Coming soon...</div>
+                        </div>
+                   </div>
+
+                   <!-- Tips Tab -->
+                   <div v-if="currentTab === 'tips'" class="space-y-6 animate-fade-in">
+                        <!-- Emergency -->
+                        <div class="bg-red-50 rounded-xl p-4 border border-red-100">
+                            <h3 class="font-bold text-red-800 mb-3 flex items-center gap-2">
+                                <i class="ph-fill ph-siren"></i> {{ t('tips_emergency') || 'Emergency' }}
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div v-for="contact in appData.tips.emergency" :key="contact.number" class="bg-white p-3 rounded-lg shadow-sm text-center">
+                                    <div class="text-xs text-gray-500">{{ dt(contact.label) }}</div>
+                                    <a :href="'tel:' + contact.number" class="text-lg font-bold text-red-600 block">{{ contact.number }}</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cantonese Phrases -->
+                        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-macau-blue mb-3 flex items-center gap-2">
+                                <i class="ph-fill ph-chat-circle-text"></i> {{ t('tips_cantonese') || 'Cantonese Phrases' }}
+                            </h3>
+                            <div class="space-y-2">
+                                <div v-for="phrase in appData.tips.cantonese" :key="phrase.en" class="flex justify-between items-center p-2 border-b border-gray-50 last:border-0">
+                                    <div>
+                                        <div class="font-medium text-gray-800">{{ dt(phrase) }}</div>
+                                        <div class="text-xs text-gray-400">{{ phrase.en }}</div>
+                                    </div>
+                                    <div class="text-sm font-mono text-macau-blue bg-blue-50 px-2 py-1 rounded">
+                                        {{ phrase.canto }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+
+                </template>
+
+            </div>
+        </main>
+
+        <!-- Floating Action Button (Tools) -->
+        <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
+            <button @click="showTools = true" class="w-12 h-12 bg-theme-primary rounded-full shadow-lg shadow-indigo-500/30 flex items-center justify-center text-white hover:scale-105 transition-transform">
+                <i class="ph-bold ph-squares-four text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Detail Modal -->
+        <div v-if="modal.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6" @click.self="closeModal">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" @click="closeModal"></div>
+            
+            <!-- Modal Content -->
+            <div class="relative w-full max-w-lg bg-theme-surface rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-in border border-theme-border">
+                
+                <!-- Close Button -->
+                <button @click="closeModal" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/50 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/70 transition-colors">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+
+                <!-- Image Header -->
+                <div class="relative h-56 flex-shrink-0">
+                    <img :src="modal.data.image" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-theme-surface to-transparent"></div>
+                </div>
+
+                <!-- Content Scrollable -->
+                <div class="p-6 overflow-y-auto custom-scrollbar">
+                    <h3 class="text-2xl font-bold text-white mb-4 leading-tight">{{ dt(modal.data.name) || dt(modal.data.title) }}</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Date & Time -->
+                        <div v-if="modal.data.date" class="space-y-2">
+                             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modal_date') }}</h4>
+                             <div class="grid grid-cols-1 gap-2">
+                                <div v-for="(d, i) in (Array.isArray(modal.data.date) ? modal.data.date : [modal.data.date])" :key="i" class="flex items-center gap-3 text-sm text-gray-300 bg-white/5 p-3 rounded-xl border border-white/5">
+                                    <div class="w-8 h-8 rounded-lg bg-theme-primary/20 flex items-center justify-center text-theme-primary">
+                                        <i class="ph-bold ph-calendar-blank"></i>
+                                    </div>
+                                    <span class="font-medium">{{ d }}</span>
+                                </div>
+                             </div>
+                        </div>
+
+                        <!-- Venue -->
+                        <div v-if="modal.data.venue" class="space-y-2">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modal_venue') }}</h4>
+                            <div class="flex items-center gap-3 text-sm text-gray-300 bg-white/5 p-3 rounded-xl border border-white/5">
+                                <div class="w-8 h-8 rounded-lg bg-theme-accent/20 flex items-center justify-center text-theme-accent">
+                                    <i class="ph-fill ph-map-pin"></i>
+                                </div>
+                                <span class="font-medium">{{ dt(modal.data.venue) }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+                        <div v-if="modal.data.price" class="space-y-2">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modal_price') }}</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="(p, i) in (Array.isArray(modal.data.price) ? modal.data.price : [modal.data.price])" :key="i" class="text-sm font-bold text-theme-accent bg-theme-accent/10 px-3 py-1.5 rounded-lg border border-theme-accent/20">
+                                    {{ p }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div v-if="modal.data.desc" class="space-y-2">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modal_intro') }}</h4>
+                            <p class="text-gray-300 text-sm leading-relaxed whitespace-pre-line bg-white/5 p-4 rounded-xl border border-white/5">{{ dt(modal.data.desc) }}</p>
+                        </div>
+                        
+                        <!-- Media Links -->
+                        <div v-if="modal.data.media && modal.data.media.length > 0" class="space-y-3">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modal_media') }}</h4>
+                            <div class="grid grid-cols-4 gap-3">
+                                <a v-for="(link, i) in modal.data.media" :key="i" :href="link.url" target="_blank" class="flex flex-col items-center gap-2 p-3 bg-white/5 hover:bg-theme-primary/10 rounded-xl border border-white/5 hover:border-theme-primary/30 transition-all group/link text-center">
+                                    <div class="w-12 h-12 rounded-2xl bg-theme-bg flex items-center justify-center text-theme-primary shadow-lg group-hover/link:scale-110 transition-transform relative overflow-hidden">
+                                        <!-- Dynamic Icon based on label -->
+                                        <i v-if="['抖音', 'TikTok'].includes(link.label)" class="ph-fill ph-tiktok-logo text-2xl"></i>
+                                        <i v-else-if="['YouTube'].includes(link.label)" class="ph-fill ph-youtube-logo text-2xl text-red-500"></i>
+                                        <i v-else-if="['Instagram'].includes(link.label)" class="ph-fill ph-instagram-logo text-2xl text-pink-500"></i>
+                                        <i v-else-if="['Facebook'].includes(link.label)" class="ph-fill ph-facebook-logo text-2xl text-blue-600"></i>
+                                        <i v-else-if="['Twitter'].includes(link.label)" class="ph-fill ph-twitter-logo text-2xl text-sky-500"></i>
+                                        <i v-else-if="['小紅書', '小红书'].includes(link.label)" class="ph-fill ph-book-bookmark text-2xl text-red-500"></i>
+                                        <i v-else-if="['Ticket', '購票', '购票'].includes(link.label)" class="ph-fill ph-ticket text-2xl text-green-500"></i>
+                                        <i v-else-if="['Map', '地圖', '地图'].includes(link.label)" class="ph-fill ph-map-pin text-2xl text-orange-500"></i>
+                                        <i v-else class="ph-fill ph-link text-2xl text-gray-400"></i>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-gray-300 group-hover/link:text-white transition-colors line-clamp-1">{{ link.label || 'Link' }}</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Tips -->
+                        <div v-if="modal.data.tips" class="bg-yellow-500/10 p-4 rounded-xl border border-yellow-500/20">
+                            <h4 class="text-xs font-bold text-yellow-500 uppercase mb-2 flex items-center gap-2">
+                                <i class="ph-fill ph-lightbulb text-lg"></i> {{ t('modal_tips') }}
+                            </h4>
+                            <p class="text-sm text-yellow-200/80 leading-relaxed">{{ dt(modal.data.tips) }}</p>
+                        </div>
+
+                        <!-- Transport -->
+                        <div v-if="modal.data.transport" class="flex items-start gap-3 text-sm text-gray-400 bg-white/5 p-4 rounded-xl border border-white/5">
+                            <i class="ph-fill ph-bus text-theme-primary text-lg mt-0.5"></i>
+                            <span class="leading-relaxed">{{ dt(modal.data.transport) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Utility Modal (Rate Converter) -->
+        <div v-if="showTools" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 animate-fade-in">
+            <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showTools = false"></div>
+            <div class="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-sm p-6 shadow-2xl relative z-10 animate-slide-up">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg text-gray-800">Utility Tools</h3>
+                    <button @click="showTools = false" class="text-gray-400 hover:text-gray-600">
+                        <i class="ph-bold ph-x text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Simple Rate Calculator -->
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <label class="text-xs font-medium text-gray-500 mb-1 block">MOP (Macau Pataca)</label>
+                        <input type="number" v-model="converter.mop" @input="convert('mop')" class="w-full bg-transparent text-2xl font-bold text-gray-800 focus:outline-none" placeholder="0">
+                    </div>
+                    <div class="flex justify-center -my-2 relative z-10">
+                        <div class="bg-white rounded-full p-1 shadow-sm border border-gray-100">
+                            <i class="ph-bold ph-arrows-down-up text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <label class="text-xs font-medium text-gray-500 mb-1 block">CNY (RMB)</label>
+                        <input type="number" v-model="converter.cny" @input="convert('cny')" class="w-full bg-transparent text-2xl font-bold text-gray-800 focus:outline-none" placeholder="0">
+                    </div>
+                    <p class="text-xs text-center text-gray-400 mt-2">Rate: 1 MOP ≈ 0.89 CNY</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        const { createApp, ref, computed, reactive, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const currentLang = ref('cn');
+                const showLangMenu = ref(false);
+                const currentTab = ref('home');
+                const searchQuery = ref('');
+                const appData = ref({});
+                const loading = ref(true);
+                const showTools = ref(false);
+                const showFavorites = ref(false);
+
+                // Fetch data from JSON file
+                const loadData = async () => {
+                    // Check for file protocol
+                    if (window.location.protocol === 'file:') {
+                        loading.value = false;
+                        document.getElementById('loading').innerHTML = `
+                            <div class="text-center p-8 text-white">
+                                <i class="ph-duotone ph-warning-circle text-4xl mb-4 text-red-500"></i>
+                                <h3 class="text-xl font-bold mb-2">Wrong Access Method</h3>
+                                <p class="text-gray-400 mb-4">You are opening the file directly.</p>
+                                <p class="text-gray-400">Please use the server URL:</p>
+                                <a href="http://localhost:3000" class="text-theme-primary hover:underline text-lg font-bold">http://localhost:3000</a>
+                            </div>
+                        `;
+                        document.getElementById('loading').style.display = 'flex'; // Keep loading overlay visible but with error
+                        return;
+                    }
+
+                    try {
+                        // Use the API endpoint if available, fallback to static file
+                        const res = await fetch('/api/events?t=' + new Date().getTime());
+                        if (!res.ok) {
+                            // Try static file as fallback
+                            const staticRes = await fetch('events.json?t=' + new Date().getTime());
+                            if (!staticRes.ok) throw new Error('Failed to load data');
+                            appData.value = await staticRes.json();
+                        } else {
+                            appData.value = await res.json();
+                        }
+                    } catch (e) {
+                        console.error('Data load error:', e);
+                        // Show error in the UI
+                        loading.value = false; // Stop loading spinner
+                        // We can let the UI show empty state or show a specific error message in the content area
+                    } finally {
+                        loading.value = false;
+                        document.getElementById('loading').style.display = 'none';
+                    }
+                };
+
+                onMounted(loadData);
+                
+                // Modal State
+                const modal = reactive({
+                    show: false,
+                    type: '',
+                    data: {}
+                });
+
+                // Converter State
+                const converter = reactive({
+                    mop: '',
+                    cny: ''
+                });
+
+                const convert = (source) => {
+                    const rate = 0.89; // Fixed rate for demo
+                    if (source === 'mop') {
+                        converter.cny = converter.mop ? (converter.mop * rate).toFixed(2) : '';
+                    } else {
+                        converter.mop = converter.cny ? (converter.cny / rate).toFixed(2) : '';
+                    }
+                };
+
+                const openModal = (type, data) => {
+                    modal.type = type;
+                    modal.data = data;
+                    modal.show = true;
+                };
+
+                const closeModal = () => {
+                    modal.show = false;
+                    setTimeout(() => {
+                        modal.data = {};
+                    }, 200);
+                };
+                
+                const languages = {
+                    cn: '简体中文',
+                    tw: '繁體中文',
+                    en: 'English'
+                };
+
+                const tabs = [
+                    { id: 'home', labelKey: 'tab_home' },
+                    { id: 'concerts', labelKey: 'tab_concerts' },
+                    { id: 'food', labelKey: 'tab_food' },
+                    { id: 'attractions', labelKey: 'tab_attractions' },
+                    { id: 'transport', labelKey: 'tab_transport' },
+                    { id: 'shopping', labelKey: 'tab_shopping' },
+                    { id: 'hotels', labelKey: 'tab_hotels' },
+                    { id: 'tips', labelKey: 'tab_tips' },
+                ];
+
+                const quickCategories = [
+                    { id: 'concerts', icon: 'ph-microphone-stage', labelKey: 'tab_concerts' },
+                    { id: 'food', icon: 'ph-bowl-food', labelKey: 'tab_food' },
+                    { id: 'attractions', icon: 'ph-camera', labelKey: 'tab_attractions' },
+                    { id: 'transport', icon: 'ph-bus', labelKey: 'tab_transport' }
+                ];
+
+                // Mock Data Dictionary (Will be expanded)
+                const i18n = {
+                    cn: {
+                        tab_home: '首页',
+                        tab_concerts: '演唱会',
+                        tab_food: '美食',
+                        tab_attractions: '景点',
+                        tab_transport: '交通',
+                        tab_shopping: '购物',
+                        tab_hotels: '住宿',
+                        tab_tips: '贴士',
+                        btn_details: '了解详情',
+                        search_placeholder: '搜索...',
+                        tips_emergency: '紧急电话',
+                        tips_cantonese: '粤语常用语',
+                        transport_border: '口岸通关',
+                        transport_shuttle: '免费穿梭巴士',
+                        modal_intro: '活动简介',
+                        modal_media: '媒体链接',
+                        modal_date: '日期时间',
+                        modal_venue: '演出地点',
+                        modal_price: '票价详情',
+                        modal_tips: '小贴士',
+                        modal_transport: '交通指南',
+                    },
+                    tw: {
+                        tab_home: '首頁',
+                        tab_concerts: '演唱會',
+                        tab_food: '美食',
+                        tab_attractions: '景點',
+                        tab_transport: '交通',
+                        tab_shopping: '購物',
+                        tab_hotels: '住宿',
+                        tab_tips: '貼士',
+                        btn_details: '了解詳情',
+                        search_placeholder: '搜尋...',
+                        tips_emergency: '緊急電話',
+                        tips_cantonese: '粵語常用語',
+                        transport_border: '口岸通關',
+                        transport_shuttle: '免費穿梭巴士',
+                        modal_intro: '活動簡介',
+                        modal_media: '媒體鏈接',
+                        modal_date: '日期時間',
+                        modal_venue: '演出地點',
+                        modal_price: '票價詳情',
+                        modal_tips: '小貼士',
+                        modal_transport: '交通指南',
+                    },
+                    en: {
+                        tab_home: 'Home',
+                        tab_concerts: 'Concerts',
+                        tab_food: 'Food',
+                        tab_attractions: 'Sights',
+                        tab_transport: 'Transport',
+                        tab_shopping: 'Shopping',
+                        tab_hotels: 'Hotels',
+                        tab_tips: 'Tips',
+                        search_placeholder: 'Search...',
+                        tips_emergency: 'Emergency',
+                        tips_cantonese: 'Cantonese Phrases',
+                        transport_border: 'Border Crossing',
+                        transport_shuttle: 'Free Shuttle Bus',
+                        modal_intro: 'Introduction',
+                        modal_media: 'Media & Links',
+                        modal_date: 'Date & Time',
+                        modal_venue: 'Venue',
+                        modal_price: 'Ticket Prices',
+                        modal_tips: 'Tips',
+                        modal_transport: 'Transport',
+                    }
+                };
+
+                // Helper for translation
+                const t = (key) => {
+                    return i18n[currentLang.value][key] || key;
+                };
+                
+                // Helper for data translation
+                const dt = (obj) => {
+                    if (!obj) return '';
+                    if (typeof obj === 'string') return obj;
+                    return obj[currentLang.value] || obj['en'] || '';
+                };
+
+                const switchLang = (lang) => {
+                    currentLang.value = lang;
+                    showLangMenu.value = false;
+                };
+
+                const currentLangLabel = computed(() => languages[currentLang.value]);
+
+                const contentPlaceholder = computed(() => {
+                    return `<div class="text-center py-10 text-gray-500">Current Tab: <span class="font-bold text-macau-blue">${currentTab.value}</span></div>`;
+                });
+
+                return {
+                    currentLang,
+                    showLangMenu,
+                    languages,
+                    currentLangLabel,
+                    switchLang,
+                    tabs,
+                    quickCategories,
+                    currentTab,
+                    searchQuery,
+                    t,
+                    dt,
+                    loading,
+                    contentPlaceholder,
+                    appData,
+                    showTools,
+                    showFavorites,
+                    modal,
+                    converter,
+                    convert,
+                    openModal,
+                    closeModal
+                };
+            },
+            mounted() {
+                // Loading handled in loadData
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

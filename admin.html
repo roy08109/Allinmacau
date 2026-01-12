@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All in Macau - 全站內容管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/vue.global.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans flex text-gray-800">
+
+    <div id="app" class="w-full flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                    <i class="ph-bold ph-gear"></i>
+                </div>
+                <h1 class="font-bold text-lg text-gray-800">管理後台</h1>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <div v-for="section in sections" :key="section.id">
+                    <button 
+                        @click="currentSection = section.id"
+                        :class="`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all ${currentSection === section.id ? 'bg-blue-50 text-blue-700 font-bold shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`"
+                    >
+                        <i :class="`ph-fill ${section.icon} text-lg`"></i>
+                        {{ section.label }}
+                    </button>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-gray-100">
+                <a href="/" target="_blank" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg transition-colors text-sm font-medium">
+                    <i class="ph-bold ph-eye"></i> 預覽網站
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-gray-50 relative">
+            
+            <!-- Top Bar -->
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 flex-shrink-0">
+                <h2 class="font-bold text-xl text-gray-800">{{ currentSectionLabel }}管理</h2>
+                <div class="flex items-center gap-4">
+                    <div v-if="message" :class="`px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-2 ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} animate-fade-in`">
+                        <i :class="message.type === 'success' ? 'ph-bold ph-check' : 'ph-bold ph-warning'"></i>
+                        {{ message.text }}
+                    </div>
+                    <button @click="saveData" :disabled="saving" class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 hover:shadow-md transition-all flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="ph-bold" :class="saving ? 'ph-spinner animate-spin' : 'ph-floppy-disk'"></i>
+                        {{ saving ? '保存中...' : '保存修改' }}
+                    </button>
+                </div>
+            </header>
+
+            <!-- Editor Area -->
+            <div class="flex-1 overflow-y-auto p-8">
+                
+                <div v-if="loading" class="h-full flex flex-col items-center justify-center text-gray-400">
+                    <i class="ph-duotone ph-spinner-gap animate-spin text-4xl mb-4"></i>
+                    <p>正在讀取數據...</p>
+                </div>
+
+                <div v-else class="max-w-5xl mx-auto space-y-8">
+                    
+                    <!-- Add Button -->
+                    <div class="flex justify-end">
+                         <button @click="addItem" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 shadow-sm flex items-center gap-2 transition-colors">
+                            <i class="ph-bold ph-plus"></i> 新增{{ currentSectionLabel }}
+                        </button>
+                    </div>
+
+                    <!-- List -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <div v-for="(item, index) in listData" :key="index" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden group hover:shadow-md transition-all">
+                            
+                            <!-- Header / Collapse Trigger (Optional, kept simple for now) -->
+                            <div class="bg-gray-50 px-6 py-3 border-b border-gray-100 flex justify-between items-center">
+                                <span class="font-bold text-gray-500 text-xs uppercase tracking-wider">ITEM #{{ listData.length - index }}</span>
+                                <button @click="deleteItem(index)" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition-colors" title="刪除此項">
+                                    <i class="ph-bold ph-trash text-lg"></i>
+                                </button>
+                            </div>
+
+                            <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start layout-item">
+                                <!-- Image Section -->
+                                <div class="lg:col-span-4 xl:col-span-3 space-y-4">
+                                    <div class="aspect-video bg-gray-100 rounded-2xl overflow-hidden border border-gray-200 relative group/img shadow-sm hover:shadow-md transition-all">
+                                        <img v-if="item.image" :src="item.image" class="w-full h-full object-cover">
+                                        <div v-else class="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-3">
+                                            <i class="ph-fill ph-image text-4xl opacity-50"></i>
+                                            <span class="text-xs font-medium">暫無圖片</span>
+                                        </div>
+                                        <!-- Upload Overlay -->
+                                        <label class="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center cursor-pointer transition-all backdrop-blur-[2px]">
+                                            <div class="text-white flex flex-col items-center gap-2 transform translate-y-2 group-hover/img:translate-y-0 transition-transform">
+                                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                                                    <i class="ph-bold ph-upload-simple text-xl"></i>
+                                                </div>
+                                                <span class="text-xs font-bold tracking-wide">更換圖片</span>
+                                            </div>
+                                            <input type="file" accept="image/*" class="hidden" @change="(e) => uploadImage(e, item)">
+                                        </label>
+                                    </div>
+                                    <div class="relative">
+                                        <i class="ph-bold ph-link absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                                        <input type="text" v-model="item.image" class="w-full text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-3 py-2 font-mono focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all" placeholder="或輸入圖片鏈接...">
+                                    </div>
+
+                                    <!-- Media Links (Moved here under image) -->
+                                    <div v-if="currentSection === 'concerts'" class="bg-purple-50/60 rounded-2xl p-5 border border-purple-100 space-y-4 hover:border-purple-200 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-bold text-purple-800 uppercase flex items-center gap-2">
+                                                <div class="w-6 h-6 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+                                                    <i class="ph-fill ph-youtube-logo"></i>
+                                                </div>
+                                                媒體鏈接
+                                            </label>
+                                            <span class="text-[10px] text-purple-400 bg-white px-2 py-0.5 rounded-full border border-purple-100">{{ ensureArray(item.media).length }}</span>
+                                        </div>
+                                        
+                                        <div class="space-y-2">
+                                            <div v-for="(link, i) in ensureArray(item.media)" :key="i" class="flex items-center gap-2 group/item">
+                                                <div class="flex-1 grid grid-cols-1 gap-2">
+                                                    <input type="text" v-model="item.media[i].label" class="bg-white border border-purple-200 text-purple-900 text-xs px-3 py-2 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-100 focus:border-purple-300 outline-none transition-all" placeholder="名稱">
+                                                    <input type="text" v-model="item.media[i].url" class="bg-white border border-purple-200 text-purple-900 text-xs px-3 py-2 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-100 focus:border-purple-300 outline-none transition-all" placeholder="URL...">
+                                                </div>
+                                                <button @click="removeArrayItem(item, 'media', i)" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-red-100 text-red-300 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm self-start mt-1">
+                                                    <i class="ph-bold ph-trash"></i>
+                                                </button>
+                                            </div>
+                                            
+                                            <!-- Add New Media -->
+                                                <div class="flex items-center gap-2 pt-1">
+                                                    <div class="flex-1 grid grid-cols-1 gap-2">
+                                                        <!-- Icon Selector -->
+                                                        <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                                                            <button v-for="icon in mediaIcons" :key="icon.label" 
+                                                                @click="setMediaLabel($event, icon.label)"
+                                                                class="flex-shrink-0 w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-blue-500 focus:bg-blue-50"
+                                                                :class="icon.color"
+                                                                :title="icon.label"
+                                                            >
+                                                                <i class="ph-fill text-lg" :class="icon.icon"></i>
+                                                            </button>
+                                                        </div>
+                                                        <input type="text" ref="mediaLabelInput" class="hidden" placeholder="新媒體名稱...">
+                                                        <input type="text" ref="mediaUrlInput" class="bg-white/50 border border-purple-200 border-dashed rounded-lg px-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-purple-100 outline-none transition-all" placeholder="新媒體 URL...">
+                                                    </div>
+                                                    <button @click="addMedia(item)" class="w-8 h-8 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center justify-center self-start mt-10">
+                                                        <i class="ph-bold ph-plus"></i>
+                                                    </button>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Fields Section -->
+                                <div class="lg:col-span-8 xl:col-span-9 space-y-6">
+                                    
+                                    <!-- Title Fields (Grid System) -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <div v-for="lang in ['cn', 'tw', 'en']" :key="lang" class="space-y-1.5">
+                                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                                {{ lang === 'cn' ? '簡體名稱' : (lang === 'tw' ? '繁體名稱' : 'ENGLISH NAME') }}
+                                            </label>
+                                            <input type="text" 
+                                                v-model="getLabelObj(item)[lang]" 
+                                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all shadow-sm"
+                                                placeholder="輸入名稱..."
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <!-- Introduction (Description) -->
+                                    <div class="space-y-1.5">
+                                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">簡介 (簡中)</label>
+                                        <textarea 
+                                            v-model="item.desc.cn" 
+                                            rows="3" 
+                                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all resize-none shadow-sm"
+                                            placeholder="請輸入活動/項目簡介..."
+                                        ></textarea>
+                                    </div>
+
+                                    <!-- Specific Fields: Concerts -->
+                                    <div v-if="currentSection === 'concerts'" class="grid grid-cols-1 xl:grid-cols-2 gap-6 layout-grid">
+                                        
+                                        <!-- Venue (Location) - Full Width above grid -->
+                                        <div class="xl:col-span-2 space-y-1.5" :class="{ 'hidden': !item.venue && !ensureVenue(item) }">
+                                            <div class="flex items-center justify-between">
+                                                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">演出地點 (VENUE)</label>
+                                                <!-- Quick Select -->
+                                                <select 
+                                                    @change="(e) => { 
+                                                        const v = venueOptions[e.target.value]; 
+                                                        if(v) item.venue = { ...v }; 
+                                                        e.target.value = '';
+                                                    }"
+                                                    class="text-[10px] bg-blue-50 text-blue-600 border border-blue-100 rounded px-2 py-0.5 outline-none focus:ring-1 focus:ring-blue-200 cursor-pointer"
+                                                >
+                                                    <option value="" selected disabled>快速選擇場館...</option>
+                                                    <option v-for="(v, idx) in venueOptions" :key="idx" :value="idx">{{ v.tw }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                                <input type="text" v-model="item.venue.cn" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all shadow-sm" placeholder="地點 (簡中)">
+                                                <input type="text" v-model="item.venue.tw" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all shadow-sm" placeholder="地點 (繁中)">
+                                                <input type="text" v-model="item.venue.en" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all shadow-sm" placeholder="Venue (English)">
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Column: Date & Price (Full Width) -->
+                                        <!-- Note: Media Links moved to Left Column (Image Column) -->
+                                        
+                                        <!-- Date Manager -->
+                                        <div class="bg-blue-50/60 rounded-2xl p-5 border border-blue-100 space-y-4 hover:border-blue-200 transition-colors flex flex-col h-full layout-item">
+                                            <div class="flex items-center justify-between">
+                                                <label class="text-xs font-bold text-blue-800 uppercase flex items-center gap-2">
+                                                    <div class="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                                                        <i class="ph-fill ph-calendar-blank"></i>
+                                                    </div>
+                                                    日期場次
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="space-y-2 flex-1">
+                                                <div v-for="(date, i) in ensureArray(item.date)" :key="i" class="flex items-center gap-2">
+                                                    <div class="flex-1 flex flex-col sm:flex-row gap-2">
+                                                        <div class="relative w-32"> <!-- Fixed width for Date -->
+                                                            <input type="date" 
+                                                                :value="parseDateTime(date).date" 
+                                                                @input="(e) => updateDateTime(item, i, e.target.value, parseDateTime(date).time)"
+                                                                class="w-full bg-white border border-blue-200 text-blue-900 text-xs px-2 py-2 rounded-lg shadow-sm font-medium focus:ring-2 focus:ring-blue-100 outline-none"
+                                                            >
+                                                        </div>
+                                                        <div class="relative w-32"> <!-- Fixed width for Time -->
+                                                            <input type="time" 
+                                                                :value="parseDateTime(date).time" 
+                                                                @input="(e) => updateDateTime(item, i, parseDateTime(date).date, e.target.value)"
+                                                                class="w-full bg-white border border-blue-200 text-blue-900 text-xs px-2 py-2 rounded-lg shadow-sm font-medium focus:ring-2 focus:ring-blue-100 outline-none"
+                                                            >
+                                                        </div>
+                                                    </div>
+                                                    <button @click="removeArrayItem(item, 'date', i)" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-red-100 text-red-300 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm flex-shrink-0">
+                                                        <i class="ph-bold ph-trash"></i>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Add Date -->
+                                                <div class="flex items-center gap-2 pt-1">
+                                                    <div class="flex-1 flex flex-col sm:flex-row gap-2">
+                                                        <div class="relative w-32">
+                                                            <input type="date" ref="newDateInput" class="w-full bg-white/50 border border-blue-200 border-dashed rounded-lg px-2 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all">
+                                                        </div>
+                                                        <div class="relative w-32">
+                                                            <input type="time" ref="newTimeInput" class="w-full bg-white/50 border border-blue-200 border-dashed rounded-lg px-2 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all">
+                                                        </div>
+                                                    </div>
+                                                    <button @click="addDateTimeSafe($event, item)" class="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center justify-center flex-shrink-0">
+                                                        <i class="ph-bold ph-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Price Manager -->
+                                        <div class="bg-green-50/60 rounded-2xl p-5 border border-green-100 space-y-4 hover:border-green-200 transition-colors flex flex-col h-full layout-item">
+                                            <div class="flex items-center justify-between">
+                                                <label class="text-xs font-bold text-green-800 uppercase flex items-center gap-2">
+                                                    <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+                                                        <i class="ph-fill ph-ticket"></i>
+                                                    </div>
+                                                    票價檔位
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="space-y-2 flex-1">
+                                                <div v-for="(price, i) in ensureArray(item.price)" :key="i" class="flex items-center gap-2">
+                                                    <div class="flex-1 relative">
+                                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-green-300 text-xs font-bold">MOP</span>
+                                                        <input type="text" 
+                                                            v-model="item.price[i]"
+                                                            class="w-full bg-white border border-green-200 text-green-900 text-xs pl-10 pr-3 py-2 rounded-lg shadow-sm font-medium focus:ring-2 focus:ring-green-100 outline-none"
+                                                        >
+                                                    </div>
+                                                    <button @click="removeArrayItem(item, 'price', i)" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-red-100 text-red-300 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm flex-shrink-0">
+                                                        <i class="ph-bold ph-trash"></i>
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Add Price -->
+                                                <div class="flex items-center gap-2 pt-1">
+                                                    <div class="flex-1 relative">
+                                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-green-300/50 text-xs font-bold">MOP</span>
+                                                        <input type="text" ref="priceInput" class="w-full bg-white/50 border border-green-200 border-dashed rounded-lg pl-10 pr-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-green-100 outline-none transition-all" placeholder="輸入價格...">
+                                                    </div>
+                                                    <button @click="addArrayItemFromInput($event, item, 'price')" class="w-8 h-8 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center justify-center flex-shrink-0">
+                                                        <i class="ph-bold ph-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <!-- Specific Fields: Food/Attractions Category -->
+                                    <div v-if="currentSection === 'food' || currentSection === 'attractions'" class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1.5">分類</label>
+                                            <select v-model="item.category" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none">
+                                                <option v-for="opt in getCategoryOptions()" :key="opt.val" :value="opt.val">{{ opt.label }}</option>
+                                            </select>
+                                        </div>
+                                        <div v-if="currentSection === 'food'">
+                                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1.5">推薦菜式</label>
+                                            <input type="text" v-model="item.dish.cn" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:bg-white outline-none">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div v-if="listData.length === 0" class="py-20 text-center rounded-3xl border-2 border-dashed border-gray-200 text-gray-400 bg-gray-50/50">
+                        <i class="ph-duotone ph-folder-open text-4xl mb-2 block"></i>
+                        暫無數據，請點擊右上角新增
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const loading = ref(true);
+                const saving = ref(false);
+                const data = ref({});
+                const currentSection = ref('concerts');
+                const message = ref(null);
+
+                const venueOptions = [
+                    { cn: '銀河綜藝館', tw: '銀河綜藝館', en: 'Galaxy Arena' },
+                    { cn: '威尼斯人綜藝館', tw: '威尼斯人綜藝館', en: 'Cotai Arena' },
+                    { cn: '倫敦人綜藝館', tw: '倫敦人綜藝館', en: 'The Londoner Arena' },
+                    { cn: '新濠影匯綜藝館', tw: '新濠影匯綜藝館', en: 'Studio City Event Center' },
+                    { cn: '澳門百老匯', tw: '澳門百老匯', en: 'Broadway Macau' },
+                    { cn: '美獅美高梅', tw: '美獅美高梅', en: 'MGM Cotai' },
+                    { cn: '永利皇宮', tw: '永利皇宮', en: 'Wynn Palace' },
+                    { cn: '上葡京', tw: '上葡京', en: 'Grand Lisboa Palace' },
+                    { cn: '澳門文化中心', tw: '澳門文化中心', en: 'Macao Cultural Centre' },
+                    { cn: '澳門蛋', tw: '澳門蛋', en: 'Macau East Asian Games Dome' }
+                ];
+
+                const sections = [
+                    { id: 'concerts', label: '演唱會', icon: 'ph-microphone-stage' },
+                    { id: 'food', label: '美食', icon: 'ph-bowl-food' },
+                    { id: 'attractions', label: '景點', icon: 'ph-camera' },
+                    // Future sections can be added here
+                    { id: 'transport', label: '交通', icon: 'ph-bus' },
+                    { id: 'tips', label: '貼士', icon: 'ph-lightbulb' }
+                ];
+
+                const sanitizeItem = (item) => {
+                    // Ensure desc object
+                    if (!item.desc || typeof item.desc !== 'object') {
+                        item.desc = { cn: item.desc || '', tw: '', en: '' };
+                    }
+                    // Ensure venue object
+                    if (!item.venue || typeof item.venue !== 'object') {
+                        item.venue = { cn: item.venue || '', tw: '', en: '' };
+                    }
+                    // Ensure arrays
+                    if (!item.date) item.date = [];
+                    if (!item.price) item.price = [];
+                    if (!item.media) item.media = [];
+                    
+                    return item;
+                };
+
+                const loadData = async () => {
+                    // Check if running on file protocol
+                    if (window.location.protocol === 'file:') {
+                        showMessage('error', '請使用 http://localhost:3000 訪問');
+                        alert('錯誤：請勿直接打開 HTML 文件。\n請在瀏覽器輸入 http://localhost:3000/admin.html');
+                        loading.value = false;
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch('/api/events?t=' + Date.now());
+                        const json = await res.json();
+                        
+                        // Sanitize all items
+                        for (const key in json) {
+                            if (Array.isArray(json[key])) {
+                                json[key].forEach(sanitizeItem);
+                            } else if (json[key].items && Array.isArray(json[key].items)) {
+                                json[key].items.forEach(sanitizeItem);
+                            }
+                        }
+                        
+                        data.value = json;
+                        loading.value = false;
+                    } catch (e) {
+                        console.error(e);
+                        showMessage('error', '無法連接服務器');
+                        loading.value = false;
+                    }
+                };
+
+                const currentSectionLabel = computed(() => {
+                    return sections.find(s => s.id === currentSection.value)?.label || '';
+                });
+
+                const listData = computed(() => {
+                    if (!data.value) return [];
+                    const sec = data.value[currentSection.value];
+                    if (!sec) return [];
+                    if (Array.isArray(sec)) return sec;
+                    if (sec.items && Array.isArray(sec.items)) return sec.items;
+                    return []; // Handle other structures later if needed
+                });
+
+                // Helper to abstract title/name difference
+                const getLabelObj = (item) => {
+                    if (item.title) return item.title;
+                    if (item.name) return item.name;
+                    // If neither exists (new item edge case), force one
+                    if (!item.title) item.title = { cn: '', tw: '', en: '' };
+                    return item.title;
+                };
+
+                const hasField = (field) => {
+                    if (listData.value.length > 0) {
+                        return field in listData.value[0];
+                    }
+                    // Fallback defaults based on section
+                    const defaults = {
+                        food: ['desc', 'dish', 'location'],
+                        attractions: ['desc', 'tips']
+                    };
+                    return (defaults[currentSection.value] || []).includes(field);
+                };
+
+                const getCategoryOptions = () => {
+                    if (currentSection.value === 'food' && data.value.food && data.value.food.categories) {
+                        return data.value.food.categories.map(c => ({ val: c.id, label: c.label.cn }));
+                    }
+                    if (currentSection.value === 'attractions') {
+                        return [
+                            { val: 'history', label: '歷史文化' },
+                            { val: 'leisure', label: '休閒娛樂' },
+                            { val: 'nature', label: '自然風光' },
+                            { val: 'shopping', label: '購物商圈' }
+                        ];
+                    }
+                    return [];
+                };
+
+                const addItem = () => {
+                    let container;
+                    if (Array.isArray(data.value[currentSection.value])) {
+                        container = data.value[currentSection.value];
+                    } else {
+                        // For objects like food, ensure structure exists
+                        if (!data.value[currentSection.value]) data.value[currentSection.value] = { items: [] };
+                        if (!data.value[currentSection.value].items) data.value[currentSection.value].items = [];
+                        container = data.value[currentSection.value].items;
+                    }
+
+                    const newItem = {
+                        id: Date.now().toString(),
+                        image: '',
+                        title: { cn: '新項目', tw: '', en: '' },
+                        name: { cn: '新項目', tw: '', en: '' } // Dual compat
+                    };
+
+                    if (currentSection.value === 'concerts') {
+                        Object.assign(newItem, {
+                            date: [], // Array by default
+                            price: [], // Array by default
+                            venue: { cn: '', tw: '', en: '' },
+                            // artist field removed from init but kept in data structure if needed for legacy
+                            desc: { cn: '', tw: '', en: '' }, // Ensure desc exists
+                            media: [] // New media field
+                        });
+                        delete newItem.name; // Concerts use title
+                    } else if (currentSection.value === 'food') {
+                        Object.assign(newItem, {
+                            desc: { cn: '', tw: '', en: '' },
+                            category: '',
+                            dish: { cn: '', tw: '', en: '' },
+                            location: { cn: '', tw: '', en: '' },
+                            venue: { cn: '', tw: '', en: '' }
+                        });
+                        delete newItem.title;
+                    } else if (currentSection.value === 'attractions') {
+                        Object.assign(newItem, {
+                            desc: { cn: '', tw: '', en: '' },
+                            category: 'leisure',
+                            tips: { cn: '', tw: '', en: '' },
+                            venue: { cn: '', tw: '', en: '' }
+                        });
+                        delete newItem.title;
+                    }
+
+                    container.unshift(newItem);
+                };
+
+                const deleteItem = (index) => {
+                    if(!confirm('確定刪除此項目嗎？')) return;
+                    if (Array.isArray(data.value[currentSection.value])) {
+                        data.value[currentSection.value].splice(index, 1);
+                    } else {
+                        data.value[currentSection.value].items.splice(index, 1);
+                    }
+                };
+
+                const parseDateTime = (str) => {
+                    if (!str) return { date: '', time: '' };
+                    // Handle "YYYY-MM-DD" or "YYYY-MM-DD HH:MM"
+                    const parts = str.split(' ');
+                    // If no space, parts[0] is date, parts[1] is undefined (time empty)
+                    return {
+                        date: parts[0] || '',
+                        time: parts[1] || ''
+                    };
+                };
+
+                const updateDateTime = (item, index, newDate, newTime) => {
+                    // Ensure date array exists
+                    if (!Array.isArray(item.date)) item.date = [];
+                    
+                    // Ensure newDate is valid
+                    if (!newDate) return;
+
+                    // If newTime is empty, just save date. If present, save "Date Time"
+                    const finalStr = newTime ? `${newDate} ${newTime}` : newDate;
+                    
+                    // Use splice to ensure Vue detects the change in the array
+                    item.date.splice(index, 1, finalStr);
+                };
+
+                const addDateTime = (item) => {
+                    const dateInput = document.querySelector('input[type="date"][ref="newDateInput"]') || document.querySelectorAll('input[type="date"]')[document.querySelectorAll('input[type="date"]').length - 1];
+                    const timeInput = document.querySelector('input[type="time"][ref="newTimeInput"]') || document.querySelectorAll('input[type="time"]')[document.querySelectorAll('input[type="time"]').length - 1];
+                    
+                    // Simple fallback if refs don't work directly in v-for scope (using refs inside v-for is tricky in Vue 3 setup)
+                    // Actually, we can just use the bound refs if we move `addDateTime` inside the component scope correctly or use event target traversal.
+                    // Let's use a simpler approach: finding inputs relative to the button click event.
+                    
+                    // Better approach: use refs properly or pass values?
+                    // Since I can't easily change the template structure to use v-model for the "new" inputs without adding state, I'll rely on DOM traversal for the "Add" button which is safe here.
+                    // Wait, I can't use `document.querySelector` reliably if there are multiple items.
+                    // Let's fix the `addDateTime` to accept the event.
+                };
+                
+                // Re-implementing addDateTime correctly
+                const addDateTimeSafe = (e, item) => {
+                    // Find container relative to the button
+                    const btn = e.target.closest('button');
+                    const container = btn.previousElementSibling; // The div with inputs
+                    
+                    const dateInput = container.querySelector('input[type="date"]');
+                    const timeInput = container.querySelector('input[type="time"]');
+                    
+                    const dateVal = dateInput.value;
+                    const timeVal = timeInput.value;
+                    
+                    if (!dateVal) {
+                        alert('請選擇日期');
+                        return;
+                    }
+                    
+                    const finalStr = timeVal ? `${dateVal} ${timeVal}` : dateVal;
+                    
+                    if (!Array.isArray(item.date)) {
+                        item.date = item.date ? [item.date] : [];
+                    }
+                    item.date.push(finalStr);
+                    
+                    // Clear inputs
+                    dateInput.value = '';
+                    timeInput.value = '';
+                };
+
+                const addMedia = (item) => {
+                    const btn = event.target.closest('button');
+                    // Container structure:
+                    // div.flex.items-center.gap-2.pt-1 (parent)
+                    //   div.flex-1.grid (wrapper)
+                    //     div.flex (icons)
+                    //     input (hidden label)
+                    //     input (url)
+                    //   button (add btn)
+                    
+                    // We need to find the wrapper which is the previous sibling of the button
+                    const wrapper = btn.previousElementSibling; 
+                    if (!wrapper) return;
+
+                    const labelInput = wrapper.querySelector('input[placeholder="新媒體名稱..."]');
+                    const urlInput = wrapper.querySelector('input[placeholder="新媒體 URL..."]');
+                    
+                    const label = labelInput ? labelInput.value.trim() : '';
+                    const url = urlInput ? urlInput.value.trim() : '';
+
+                    if (!label) {
+                        alert('請選擇媒體類型');
+                        return;
+                    }
+                    if (!url) {
+                        alert('請輸入鏈接 URL');
+                        return;
+                    }
+
+                    if (!Array.isArray(item.media)) {
+                        item.media = item.media ? [item.media] : [];
+                    }
+                    item.media.push({ label, url });
+
+                    // Clear inputs
+                    if (labelInput) labelInput.value = '';
+                    if (urlInput) urlInput.value = '';
+                };
+
+                const ensureArray = (val) => {
+                    if (Array.isArray(val)) return val;
+                    if (!val) return [];
+                    return [val];
+                };
+
+                const addArrayItemFromInput = (e, item, field) => {
+                    // Find the sibling input
+                    const input = e.target.parentElement.querySelector('input');
+                    const val = input.value.trim();
+                    if (!val) return;
+
+                    if (!Array.isArray(item[field])) {
+                        item[field] = item[field] ? [item[field]] : [];
+                    }
+                    item[field].push(val);
+                    input.value = ''; // Clear input
+                };
+
+                const removeArrayItem = (item, field, index) => {
+                    if (Array.isArray(item[field])) {
+                        item[field].splice(index, 1);
+                    }
+                };
+
+                // Image Upload
+                const uploadImage = async (e, item) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    try {
+                        showMessage('success', '處理圖片中...');
+                        const compressed = await compressImage(file);
+                        const res = await fetch('/api/upload', {
+                            method: 'POST',
+                            body: JSON.stringify({ filename: file.name, content: compressed })
+                        });
+                        const json = await res.json();
+                        if(json.success) {
+                            item.image = json.url;
+                            showMessage('success', '上傳完成');
+                        } else throw new Error(json.message);
+                    } catch(err) {
+                        showMessage('error', '上傳失敗: ' + err.message);
+                    }
+                };
+
+                const compressImage = (file) => {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = (e) => {
+                            const img = new Image();
+                            img.src = e.target.result;
+                            img.onload = () => {
+                                const canvas = document.createElement('canvas');
+                                const MAX = 1200;
+                                let w = img.width, h = img.height;
+                                if (w > MAX) { h *= MAX/w; w = MAX; }
+                                canvas.width = w; canvas.height = h;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0, w, h);
+                                resolve(canvas.toDataURL('image/jpeg', 0.8));
+                            };
+                            img.onerror = reject;
+                        };
+                        reader.onerror = reject;
+                    });
+                };
+
+                const saveData = async () => {
+                    saving.value = true;
+                    try {
+                        await fetch('/api/save-events', {
+                            method: 'POST',
+                            body: JSON.stringify(data.value)
+                        });
+                        showMessage('success', '所有更改已保存');
+                        
+                        // Layout Report
+                        console.group('Layout Optimization Report');
+                        console.log('Rendering Engine: CSS Grid + Flexbox');
+                        console.log('Boundary Check: Enabled (Overflow Hidden + Text Ellipsis)');
+                        console.log('Spacing Strategy: Consistent gap-4 (16px) and gap-6 (24px)');
+                        
+                        document.querySelectorAll('.layout-item').forEach((el, idx) => {
+                            const rect = el.getBoundingClientRect();
+                            console.log(`Item #${idx+1} Bounds:`, {
+                                x: Math.round(rect.x),
+                                y: Math.round(rect.y),
+                                width: Math.round(rect.width),
+                                height: Math.round(rect.height)
+                            });
+                        });
+                        console.groupEnd();
+                        
+                    } catch(e) {
+                        showMessage('error', '保存失敗');
+                    } finally {
+                        saving.value = false;
+                    }
+                };
+
+                const showMessage = (type, text) => {
+                    message.value = { type, text };
+                    setTimeout(() => message.value = null, 3000);
+                };
+
+                const ensureVenue = (item) => {
+                    if (!item.venue) item.venue = { cn: '', tw: '', en: '' };
+                    // Handle legacy string venue if exists
+                    if (typeof item.venue === 'string') {
+                         item.venue = { cn: item.venue, tw: item.venue, en: item.venue };
+                    }
+                };
+
+                onMounted(loadData);
+
+                const mediaIcons = [
+                    { label: 'YouTube', icon: 'ph-youtube-logo', color: 'text-red-500' },
+                    { label: 'Instagram', icon: 'ph-instagram-logo', color: 'text-pink-500' },
+                    { label: 'Facebook', icon: 'ph-facebook-logo', color: 'text-blue-600' },
+                    { label: 'Twitter', icon: 'ph-twitter-logo', color: 'text-sky-500' },
+                    { label: 'TikTok', icon: 'ph-tiktok-logo', color: 'text-black' },
+                    { label: '抖音', icon: 'ph-tiktok-logo', color: 'text-black' },
+                    { label: '小紅書', icon: 'ph-book-bookmark', color: 'text-red-500' },
+                    { label: 'Website', icon: 'ph-globe', color: 'text-gray-500' },
+                    { label: 'Ticket', icon: 'ph-ticket', color: 'text-green-600' },
+                    { label: 'Map', icon: 'ph-map-pin', color: 'text-orange-500' }
+                ];
+
+                const setMediaLabel = (e, label) => {
+                    // Find the container relative to the clicked button
+                    // The button is inside a flex container inside grid
+                    // button -> div.flex.gap-2 -> div.flex-1.grid
+                    
+                    // We need to find the input within the current component scope
+                    // Since we are in a loop, direct DOM traversal is safest without complex refs
+                    const btn = e.target.closest('button');
+                    const wrapper = btn.closest('.flex-1.grid'); 
+                    // The hidden input is a sibling of the button container's parent? 
+                    // No, structure is:
+                    // div.flex-1.grid
+                    //   div.flex (buttons)
+                    //   input (hidden label)
+                    //   input (url)
+                    
+                    if (wrapper) {
+                        const labelInput = wrapper.querySelector('input[placeholder="新媒體名稱..."]');
+                        if (labelInput) {
+                            labelInput.value = label;
+                            // Trigger input event to update v-model if it were bound (it's not v-model here, it's ref read)
+                            // But addMedia reads from .value directly, so setting .value is enough.
+                        }
+                    }
+                };
+
+                return {
+                    loading, saving, message,
+                    currentSection, currentSectionLabel, sections, listData,
+                    addItem, deleteItem, saveData,
+                    getLabelObj, hasField, getCategoryOptions,
+                    ensureArray, addArrayItemFromInput, removeArrayItem,
+                    uploadImage,
+                    parseDateTime, updateDateTime, addDateTimeSafe, addMedia,
+                    ensureVenue,
+                    venueOptions,
+                    mediaIcons,
+                    setMediaLabel
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
