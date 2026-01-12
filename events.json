@@ -1,20 +1,24 @@
 {
     "concerts": [
         {
-            "id": "1768233188740",
-            "image": "uploads/1768240959156_DylanWang.png",
+            "id": "1768255373297",
+            "image": "uploads/358b7782-a13b-4341-9f45-476394f01308.png",
             "title": {
-                "cn": "2026王鶴棣D.Party 演唱會中國澳門站",
-                "tw": "2026王鶴棣D.Party 演唱會中國澳門站",
-                "en": "2026王鶴棣D.Party 演唱會中國澳門站"
+                "cn": "2025–26 aespa LIVE TOUR – SYNK: aeXIS LINE – in MACAU",
+                "tw": "2025–26 aespa LIVE TOUR – SYNK: aeXIS LINE – in MACAU",
+                "en": "2025–26 aespa LIVE TOUR – SYNK: aeXIS LINE – in MACAU"
             },
             "date": [
-                "2026-01-17 08:00"
+                "2026-03-07 20:00",
+                "2026-03-08 18:00"
             ],
             "price": [
-                "999",
-                "799",
-                "1299"
+                "-VIP STANDING L/R (*SOUND CHECK) MOP 1988",
+                "-PLATINUM SEATED MOP 1988",
+                "-CAT 1 SEATED MOP 1688",
+                "-CAT 2 SEATED MOP 1288",
+                "-CAT 3 SEATED MOP 988",
+                "-CAT 4 SEATED MOP 688"
             ],
             "venue": {
                 "cn": "銀河綜藝館",
@@ -22,84 +26,295 @@
                 "en": "Galaxy Arena"
             },
             "desc": {
-                "cn": "2026王鶴棣D.Party 演唱會中國澳門站將於1月17日在銀河綜藝館震撼來襲。 這將是王鶴棣在澳門的首次演出，“兄棣伙”們，一起享受這場炙熱的狂歡派對吧！王鶴棣領銜主演《流星花園》、《蒼蘭訣》、《以愛為營》和《大奉打更人》等多部熱門影視作品而獲得無數粉絲。在這次演唱會中，他將展現他作為演員和歌手的雙重魅力，演繹多首人氣歌曲及新歌，帶來充滿能量的舞台表演！",
-                "tw": "",
-                "en": ""
+                "cn": "韩国人气女团aespa第三次巡回演唱会《2025–26 aespa LIVE TOUR – SYNK: aeXIS LINE – in MACAU》，将于2026年3月7日及8日于银河综艺馆举行！巡演以中轴线为灵感及「连结的开始」为核心概念，与粉丝一起寻找aespa的核心，将过去与未来串联，透过音乐和表演传递独立和自信的正能量。\n\n本次巡演特别加入现场乐队合作演出，以更震撼的音乐编排与视觉舞台效果，呈现出aespa强劲的舞台能量和音乐感染力。",
+                "tw": "韓國人氣女團aespa第三次巡迴演唱會《2025–26 aespa LIVE TOUR – SYNK: aeXIS LINE – in MACAU》，將於2026年3月7日及8日於銀河綜藝館舉行！巡演以中軸線為靈感及「連結的開始」為核心概念，與粉絲一起尋找aespa的核心，將過去與未來串聯，透過音樂和表演傳遞獨立和自信的正能量。\n\n本次巡演特別加入現場樂隊合作演出，以更震撼的音樂編排與視覺舞台效果，呈現出aespa強勁的舞台能量和音樂感染力。",
+                "en": "Korean girl group aespa's third world tour, \"2025–26 aespa LIVE TOUR – SYNK: aeXIS LINE – in MACAU,\" will be held at the Galaxy Arena on March 7th and 8th, 2026! Inspired by a central axis and centered on the concept of \"the beginning of connection,\" the tour invites fans to discover aespa's core identity, connecting the past and future, and conveying positive energy of independence and confidence through music and performance.\n\nThis tour will feature live band performances, showcasing aespa's powerful stage presence and musical charisma with even more stunning musical arrangements and visual effects."
+            },
+            "media": []
+        },
+        {
+            "id": "1768255198105",
+            "image": "uploads/0a41edf9-b0ae-4909-b636-f1ad3fffacc8.png",
+            "title": {
+                "cn": "譚嘉儀「陪著你走」巡迴演唱會 - 澳門站",
+                "tw": "譚嘉儀「陪著你走」巡迴演唱會 - 澳門站",
+                "en": "譚嘉儀「陪著你走」巡迴演唱會 - 澳門站"
+            },
+            "date": [
+                "2026-02-28 20:00"
+            ],
+            "price": [
+                "澳門幣MOP $1,299/$899"
+            ],
+            "venue": {
+                "cn": "銀河G Box",
+                "tw": "銀河G Box",
+                "en": "Galaxy G Box"
+            },
+            "desc": {
+                "cn": "被媒体誉为“港剧OST女王”的灵魂歌者——谭嘉仪，即将在澳门开唱！\n\n2月28日，一同穿越港剧的黄金年代，在歌声中重温青春记忆，见证独立音乐人的华丽转身",
+                "tw": "被媒體譽為“港劇OST女王”的靈魂歌者——譚嘉儀，即將在澳門開唱！\n\n2月28日，一同穿越港劇的黃金年代，在歌聲中重溫青春記憶，見證獨立音樂人的華麗轉身",
+                "en": "The soulful singer hailed by the media as the \"Queen of Hong Kong Drama OSTs\"—Taman Kayee—is about to perform in Macau!\n\nOn February 28th, let's travel back to the golden age of Hong Kong dramas, relive our youthful memories through song, and witness the magnificent transformation of an independent musician."
+            },
+            "media": []
+        },
+        {
+            "id": "1768254977369",
+            "image": "uploads/6cc9e23a-4920-4a7e-bf6e-b3bf01c8fbec.png",
+            "title": {
+                "cn": "汪蘇瀧 2026「羅曼前傳」世界巡迴演唱會 – 澳門站",
+                "tw": "汪蘇瀧 2026「羅曼前傳」世界巡迴演唱會 – 澳門站",
+                "en": "汪蘇瀧 2026「羅曼前傳」世界巡迴演唱會 – 澳門站"
+            },
+            "date": [
+                "2026-02-27 20:00",
+                "2026-02-28 08:00",
+                "2026-03-01 07:00"
+            ],
+            "price": [
+                "澳門幣/1388 / 1088 / 788 / 488"
+            ],
+            "venue": {
+                "cn": "銀河綜藝館",
+                "tw": "銀河綜藝館",
+                "en": "Galaxy Arena"
+            },
+            "desc": {
+                "cn": "汪苏泷2026「罗曼前传」世界巡演首站即将来到澳门银河！ 2026年2月27-28日及3月1日，连续三晚，银河综艺馆开唱！全新主题及舞美、焕新歌曲编排，一起近距离感受这场专属于罗曼宇宙的巅峰巨制！",
+                "tw": "汪蘇瀧2026「羅曼前傳」世界巡演首站即將來到澳門銀河！2026年2月27-28日及3月1日，連續三晚，銀河綜藝館開唱！全新主題及舞美、煥新歌曲編排，一起近距離感受這場專屬於羅曼宇宙的巔峰巨制！",
+                "en": "Wang Sulong's 2026 \"Romantic Prequel\" World Tour will kick off at Galaxy Macau! He will perform at the Galaxy Arena for three consecutive nights on February 27-28 and March 1, 2026! Experience a brand new theme and stage design, along with revamped song arrangements – a pinnacle production exclusively for the Romantic universe!"
+            },
+            "media": []
+        },
+        {
+            "id": "1768254758554",
+            "image": "uploads/3a61a02a-c14f-4d40-9677-0579dbfc2d04.png",
+            "title": {
+                "cn": "「澳門銀河」榮譽呈獻：歐陽「萬」事「成」意 賀年Show",
+                "tw": "「澳門銀河」榮譽呈獻：歐陽「萬」事「成」意 賀年Show",
+                "en": "「澳門銀河」榮譽呈獻：歐陽「萬」事「成」意 賀年Show"
+            },
+            "date": [
+                "2026-02-21 20:00",
+                "2026-02-22 06:00"
+            ],
+            "price": [
+                "澳門幣MOP $880/$780/$680/$480/$380"
+            ],
+            "venue": {
+                "cn": "銀河綜藝館",
+                "tw": "銀河綜藝館",
+                "en": "Galaxy Arena"
+            },
+            "desc": {
+                "cn": "荷里活影星、栋笃笑演员欧阳万成Jimmy O. Yang强势回归「澳门银河」综合度假城，并将于2026年2月21日及22日（农历年初五及初六）首度登上澳门最大室内场馆──银河综艺馆，为观众带来「澳门银河」荣誉呈献：欧阳「万」事「成」意贺年Show，以全新节目编排呈献多元化演出，除了个人栋笃笑，更有一众重量级嘉宾到场助兴，载歌载舞共庆新岁。\n\n正当澳门喜迎农历新年佳节，这将是贺年与亲朋好友必看活动，为观众带来满满欢乐与吉祥气氛，笑声迎新岁，好运满人间。万勿错过这场新春限定的捧腹大笑盛事，立即准备就绪，与Jimmy一同来银河，全年行好运！",
+                "tw": "荷里活影星、棟篤笑演員歐陽萬成Jimmy O. Yang強勢回歸「澳門銀河」綜合度假城，並將於2026年2月21日及22日（農曆年初五及初六）首度登上澳門最大室內場館──銀河綜藝館，為觀眾帶來「澳門銀河」榮譽呈獻：歐陽「萬」事「成」意賀年Show，以全新節目編排呈獻多元化演出，除了個人棟篤笑，更有一眾重量級嘉賓到場助興，載歌載舞共慶新歲。\n\n正當澳門喜迎農曆新年佳節，這將是賀年與親朋好友必看活動，為觀眾帶來滿滿歡樂與吉祥氣氛，笑聲迎新歲，好運滿人間。萬勿錯過這場新春限定的捧腹大笑盛事，立即準備就緒，與Jimmy一同來銀河，全年行好運！",
+                "en": "Hollywood star and stand-up comedian Jimmy O. Yang is making a strong comeback to the Galaxy Macau integrated resort, and will be performing for the first time at the Galaxy Arena, Macau's largest indoor venue, on February 21st and 22nd, 2026 (the fifth and sixth days of the Lunar New Year). He will present the \"Jimmy O. Yang's 'Everything Goes Well' Lunar New Year Show,\" a newly arranged and diverse program featuring his stand-up comedy and a host of VIP guests to celebrate the New Year with singing and dancing.\n\nJust in time for Macau's Lunar New Year celebrations, this will be a must-see event for friends and family, bringing joy and good fortune to the new year. Don't miss this limited-time laugh-out-loud extravaganza! Get ready to join Jimmy at Galaxy Macau for a year of good luck!"
+            },
+            "media": []
+        },
+        {
+            "id": "1768254449104",
+            "image": "uploads/a1d0055c-64d4-41f0-ae68-5bd3481f4512.png",
+            "title": {
+                "cn": "2026田震「玩兒個痛快」巡迴演唱會—中國澳門站",
+                "tw": "2026田震「玩兒個痛快」巡迴演唱會—中國澳門站",
+                "en": "2026田震「玩兒個痛快」巡迴演唱會—中國澳門站"
+            },
+            "date": [
+                "2026-02-19 19:30"
+            ],
+            "price": [
+                "澳門幣/ 1,680 / 1,580 / 1,380 / 1,080 / 880 / 680"
+            ],
+            "venue": {
+                "cn": "銀河綜藝館",
+                "tw": "銀河綜藝館",
+                "en": "Galaxy Arena"
+            },
+            "desc": {
+                "cn": "2026 年 02 月 19 日，中国澳门银河综艺馆，\n让我们在这个特别的夜晚相聚，\n用歌声温习青春，用音乐见证时光。\n和田震一起，点燃新春的狂热，\n和田震一起，迎接新年的到来，\n我们尽情摇摆，今夜玩儿个痛快！\n\n2026田震「玩儿个痛快」巡回演唱会介绍——\n一场与青春的重逢！\n一次为岁月的歌唱！\n一个让记忆苏醒的夜晚！\n田震，华语乐坛无可取代的传奇女歌手。\n时隔 24 年，天后归来，震撼乐坛。\n她说，“嘿，那些曾经一起走过，彼此陪伴，又在这人生路上不断遇见，重逢，心心念念的小伙伴们，老 baby 们！这次，咱们约好了，见面，就要玩儿个痛快！”\n\n在我们心中，田震的歌声从未远去——\n《执着》里的坚持，《风雨彩虹铿锵玫瑰》的绽放，\n《野花》的自由，《干杯，朋友》的洒脱，\n《爱不后悔》的无畏，《水姻缘》的缱绻，\n《好大一棵树》的深情，《靠近我》的诉说，\n《月牙泉》的思念，《未了情》的期盼……\n太多太多好歌，只有田震能唱出最动人的味道！\n每一首都是时光的印记，刻在几代人的生命里！\n\n现在，她回来了！\n带着熟悉的嗓音，带着岁月的沉淀，\n更带着从未改变的真诚与热爱。\n\n这一次， 我们要一起真正地「玩儿个痛快」——\n在经典旋律中找回最初的感动！\n在真挚歌声里遇见曾经的自己！\n在震撼现场里拥抱惊喜的田震！\n2026田震「玩儿个痛快」巡回演唱会由顶尖团队倾力打造，\n焕新制作唤醒经典， 创新舞美重塑感动，\n摇滚的动感， 抒情的感动，\n民族的热血， 节奏的热力……\n田震的每首金曲，都会在精心设计，“玩儿”兴大发的精彩舞台上，\n展现全新生命力，带来视觉与听觉的双重震撼！\n\n那些年，我们一起听过的歌，\n那些藏在旋律里的故事与情感，\n都将在这一夜， 在田震的演唱会现场\n\n尽兴地绽放、摇摆、欢呼！\n\n这是久别重逢的欢聚，\n这是不负约定的相会，\n让我们放下忙碌， 忘记时间，\n与田震一起在歌声里——玩儿个痛快！\n\n青春依然不老，田震风采依旧，\n这一夜，我们玩儿个痛快！",
+                "tw": "2026 年 02 月 19 日，中國澳門銀河綜藝館， \n讓我們在這個特別的夜晚相聚， \n用歌聲溫習青春，用音樂見證時光。 \n和田震一起，點燃新春的狂熱， \n和田震一起，迎接新年的到來， \n我們盡情搖擺，今夜玩兒個痛快！\n\n2026田震「玩兒個痛快」巡迴演唱會介紹——\n一場與青春的重逢！ \n一次為歲月的歌唱！ \n一個讓記憶蘇醒的夜晚！\n田震，華語樂壇無可取代的傳奇女歌手。 \n時隔 24 年，天后歸來，震撼樂壇。 \n她說，“嘿，那些曾經一起走過，彼此陪伴，又在這人生路上不斷遇見，重逢，心心念念的小夥伴們，老 baby 們！這次，咱們約好了，見面，就要玩兒個痛快！”\n\n在我們心中，田震的歌聲從未遠去—— \n《執著》裡的堅持，《風雨彩虹鏗鏘玫瑰》的綻放， \n《野花》的自由，《乾杯，朋友》的灑脫， \n《愛不後悔》的無畏，《水姻緣》的繾綣， \n《好大一棵樹》的深情，《靠近我》的訴說， \n《月牙泉》的思念，《未了情》的期盼…… \n太多太多好歌，只有田震能唱出最動人的味道！ \n每一首都是時光的印記，刻在幾代人的生命裡！\n\n現在，她回來了！ \n帶著熟悉的嗓音，帶著歲月的沉澱， \n更帶著從未改變的真誠與熱愛。\n\n這一次， 我們要一起真正地「玩兒個痛快」—— \n在經典旋律中找回最初的感動！ \n在真摯歌聲裡遇見曾經的自己！ \n在震撼現場裡擁抱驚喜的田震！ \n2026田震「玩兒個痛快」巡迴演唱會由頂尖團隊傾力打造， \n煥新製作喚醒經典， 創新舞美重塑感動， \n搖滾的動感， 抒情的感動， \n民族的熱血， 節奏的熱力…… \n田震的每首金曲，都會在精心設計，“玩兒”興大發的精彩舞臺上， \n展現全新生命力，帶來視覺與聽覺的雙重震撼！\n\n那些年，我們一起聽過的歌， \n那些藏在旋律裡的故事與情感， \n都將在這一夜， 在田震的演唱會現場\n\n盡興地綻放、搖擺、歡呼！\n\n這是久別重逢的歡聚， \n這是不負約定的相會， \n讓我們放下忙碌， 忘記時間， \n與田震一起在歌聲裡——玩兒個痛快！\n\n青春依然不老，田震風采依舊， \n這一夜，我們玩兒個痛快！",
+                "en": "February 19, 2026, Galaxy Macau Forum,\n\nLet's gather on this special night,\n\nto relive our youth with songs, and witness time with music.\n\nWith Tian Zhen, ignite the fervor of the New Year,\n\nWith Tian Zhen, welcome the New Year,\n\nLet's rock and roll, let's have a blast tonight!\n\nIntroduction to Tian Zhen's 2026 \"Have a Blast\" World Tour Concert—\n\nA reunion with youth!\n\nA song for the passing years!\n\nA night to awaken memories!\n\nTian Zhen, an irreplaceable legendary female singer in the Chinese music scene.\n\nAfter 24 years, the diva returns, shaking the music world.\n\nShe said, \"Hey, all you old friends who walked alongside me, accompanied each other, and kept meeting and reuniting on this journey of life, my dearest friends! This time, we've made a promise: when we meet, we'll have a blast!\"\n\nIn our hearts, Tian Zhen's songs have never faded—\nThe perseverance in \"Persistence,\" the blossoming in \"Rainbow After the Storm, Resilient Rose,\"\nThe freedom in \"Wildflower,\" the carefree spirit in \"Cheers, My Friend,\"\nThe fearlessness in \"Love Without Regret,\" the tenderness in \"Water Marriage,\"\nThe deep affection in \"A Big Tree,\" the storytelling in \"Come Closer,\"\nThe longing in \"Crescent Moon Spring,\" the anticipation in \"Unfinished Love\"... So many wonderful songs, only Tian Zhen can sing them with such moving depth!\n\nEach song is a mark of time, etched into the lives of generations!\n\nNow, she's back!\n\nWith her familiar voice, with the sedimentation of years,\n\nand with her unchanging sincerity and passion.\n\nThis time, let's truly \"have a blast\" together—\nRediscover the initial感动 (emotional resonance) in classic melodies!\nMeet your past self in heartfelt songs!\nEmbrace the surprises of Tian Zhen in a breathtaking live performance!\n\nTian Zhen's 2026 \"Have a blast\" tour is meticulously crafted by a top-notch team.\n\nA refreshed production awakens classics, innovative stage design reshapes the emotion,\nThe dynamism of rock, the emotion of ballads,\nThe passion of national songs, the energy of rhythm…\nEvery hit song by Tian Zhen will be given new life on a meticulously designed, exhilarating stage,\nDelivering a double shock to both the eyes and ears!\n\nThose songs we listened to together over the years,\nThe stories and emotions hidden within those melodies,\nWill all bloom, sway, and cheer to their fullest on this night, at Tian Zhen's concert!\n\nThis is a joyous reunion after a long separation,\n\nThis is a meeting kept in promise,\n\nLet us put aside our busy lives, forget about time,\n\nand have a blast with Tian Zhen in song!\n\nYouth remains ever young, Tian Zhen's charm endures,\n\nTonight, let's have a blast!"
+            },
+            "media": []
+        },
+        {
+            "id": "1768253591616",
+            "image": "uploads/92a64be9-0557-4a97-8766-6ce9ce4ea858.png",
+            "title": {
+                "cn": "康士坦的變化球 KST《OVERSEAS》",
+                "tw": "康士坦的變化球 KST《OVERSEAS》",
+                "en": "康士坦的變化球 KST《OVERSEAS》"
+            },
+            "date": [
+                "2026-02-07 19:00"
+            ],
+            "price": [
+                "澳門幣MOP $880/$580"
+            ],
+            "venue": {
+                "cn": "銀河G Box",
+                "tw": "銀河G Box",
+                "en": "Galaxy G Box"
+            },
+            "desc": {
+                "cn": "康士坦的变化球KST在音乐旅程中始终保持着对改变的敏锐。此次演出从台湾跨越海洋到澳门，诠释「OVERSEAS」精神。每段旋律都是故事延展，承载乐队与乐迷的共鸣，共探浩瀚音乐宇宙。",
+                "tw": "康士坦的變化球KST在音樂旅程中始終保持著對改變的敏銳。此次演出從台灣跨越海洋到澳門，詮釋「OVERSEAS」精神。每段旋律都是故事延展，承載樂隊與樂迷的共鳴，共探浩瀚音樂宇宙。",
+                "en": "KST, the band known for their ever-changing style, has always maintained a keen awareness of change throughout their musical journey. This performance, spanning from Taiwan to Macau, embodies the spirit of \"OVERSEAS.\" Each melody unfolds a story, carrying the resonance between the band and their fans, as they explore the vast universe of music together."
+            },
+            "media": []
+        },
+        {
+            "id": "1768253210656",
+            "image": "uploads/faa67c78-3095-4800-a8d9-f842cc1981c1.png",
+            "title": {
+                "cn": "2026 RIIZE CONCERT TOUR [RIIZING LOUD] IN MACAU",
+                "tw": "2026 RIIZE CONCERT TOUR [RIIZING LOUD] IN MACAU",
+                "en": "2026 RIIZE CONCERT TOUR [RIIZING LOUD] IN MACAU"
+            },
+            "date": [
+                "2026-02-07 19:00",
+                "2026-01-08 06:00"
+            ],
+            "price": [
+                "VVIP STANDING L/R (*SOUND CHECK) MOP 1999",
+                "VIP STANDING L/R MOP 1799",
+                "PLATINUM SEATED MOP 1799",
+                "CAT 1 MOP 1499",
+                "CAT 2 MOP 1199",
+                "CAT 3 MOP 999",
+                "CAT 4 MOP 799"
+            ],
+            "venue": {
+                "cn": "銀河綜藝館",
+                "tw": "銀河綜藝館",
+                "en": "Galaxy Arena"
+            },
+            "desc": {
+                "cn": "韩国人气男团RIIZE强势来袭银河综艺馆！备受瞩目的RIIZE，以其独特的「情感流行（Emotional Pop）」音乐风格及卓越的舞台表现，在音乐界横扫多个音乐奖项。他们即将于2026年2月在澳门举行期待已久的世界巡回演唱会 [RIIZING LOUD]。让我们一起近距离感受这颗新星的璀璨魅力，绝对不容错过！",
+                "tw": "韓國人氣男團RIIZE強勢來襲銀河綜藝館！備受矚目的RIIZE，以其獨特的「情感流行（Emotional Pop）」音樂風格及卓越的舞台表現，在音樂界橫掃多個音樂獎項。他們即將於2026年2月在澳門舉行期待已久的世界巡迴演唱會 [RIIZING LOUD]。讓我們一起近距離感受這顆新星的璀璨魅力，絕對不容錯過！",
+                "en": "Korean boy band RIIZE is coming to Galaxy Macau! The highly anticipated RIIZE, with their unique \"Emotional Pop\" music style and outstanding stage presence, have swept numerous music awards. They will be holding their long-awaited world tour, [RIIZING LOUD], in Macau in February 2026. Let's experience the dazzling charm of these rising stars up close – it's an event you absolutely can't miss!"
+            },
+            "media": []
+        },
+        {
+            "id": "1768252901255",
+            "image": "uploads/1b530c47-3432-4660-8b5b-2651364a39ca.png",
+            "title": {
+                "cn": "Hello Nico「我们一起看海」2026澳门专场",
+                "tw": "Hello Nico「我們一起看海」2026澳門專場",
+                "en": "Hello Nico \"Let's Watch the Sea Together\" 2026 Macau Special"
+            },
+            "date": [
+                "2026-01-31 19:00"
+            ],
+            "price": [
+                "澳門幣MOP $760 / $580 （全站位）"
+            ],
+            "venue": {
+                "cn": "銀河G Box",
+                "tw": "銀河G Box",
+                "en": "Galaxy G Box"
+            },
+            "desc": {
+                "cn": "睽违十年，海风再起。\n\nHello Nico 自2013年成立，以《熟悉的荒凉》刻划一代人的孤独与追寻，从荒凉走到海岸，从内心走向辽阔，这一次，Hello Nico带着潮汐般的能量与沉淀已久的对话，重返澳门。\n\n这是一场Hello Nico与澳门乐迷迟来恰好的重聚——这晚，我们将一起漂流、一起靠岸，在这些陪伴无数夜晚的歌声里，找到属于自己的岸。\n\n2026年1月31日，让我们一起看海\n\n看那片音乐汇成的海，如何淹没沉默，如何照亮夜空。\n\n艺人简介：\n\nHello Nico 自2013年成立，代表作《荒芜》、《花》、《接下来如何》，屡屡标记音乐里程碑，曾入围金曲奖「最佳新人」，并巡演亚洲各地，屡创完售纪录。直到2019年，团员们面临30岁之际，开始减少乐团演出，更多地探索自身的音乐养分与创作冲动。随着时间的沉淀于2024年9月，Hello Nico 带来EP新作《Plan B：如果回来，我们一起看海》，词曲由团员们共创而成。 「我们一起看海」巡演于2024年11月起跑，一路历经十二个城市，观演的歌迷们也对团员的成长与久别重逢的专场演出表达强烈的感动与激动。此次再次来到澳门希望能带给歌迷久违的感动。",
+                "tw": "睽違十年，海風再起。\n\nHello Nico 自2013年成立，以《熟悉的荒涼》刻劃一代人的孤獨與追尋，從荒涼走到海岸，從內心走向遼闊，這一次，Hello Nico帶著潮汐般的能量與沉澱已久的對話，重返澳門。\n\n這是一場Hello Nico與澳門樂迷遲來恰好的重聚——這晚，我們將一起漂流、一起靠岸，在這些陪伴無數夜晚的歌聲裡，找到屬於自己的岸。\n\n2026年1月31日，讓我們一起看海\n\n看那片音樂匯成的海，如何淹沒沉默，如何照亮夜空。\n\n藝人簡介：\n\nHello Nico 自2013年成立，代表作《荒蕪》、《花》、《接下來如何》，屢屢標記音樂里程碑，曾入圍金曲獎「最佳新人」，並巡演亞洲各地，屢創完售紀錄。直到2019年，團員們面臨30歲之際，開始減少樂團演出，更多地探索自身的音樂養分與創作衝動。隨著時間的沈澱於2024年9月，Hello Nico 帶來EP新作《Plan B：如果回來，我們一起看海》，詞曲由團員們共創而成。「我們一起看海」巡演於2024年11月起跑，一路歷經十二個城市，觀演的歌迷們也對團員的成長與久別重逢的專場演出表達強烈的感動與激動。此次再次來到澳門希望能帶給歌迷久違的感動。",
+                "en": "After a ten-year hiatus, the sea breeze returns.\n\nHello Nico, founded in 2013, portrayed the loneliness and search of a generation with \"Familiar Desolation.\" From desolation to the coast, from the heart to the vastness, Hello Nico returns to Macau this time, bringing with them tidal energy and a long-awaited dialogue.\n\nThis is a belated yet perfectly timed reunion between Hello Nico and Macau music fans—tonight, we will drift together, we will reach the shore together, finding our own shore in the songs that have accompanied countless nights.\n\nJanuary 31, 2026, let's watch the sea together.\n\nSee how the sea of ​​music submerges silence, how it illuminates the night sky.\n\nArtist Profile:\n\nHello Nico, founded in 2013, is known for hits like \"Desolation,\" \"Flower,\" and \"What's Next,\" repeatedly marking musical milestones. They have been nominated for the Golden Melody Award for \"Best New Artist\" and have toured throughout Asia, consistently achieving sold-out records. Until 2019, as the band members approached their 30s, they began to reduce band performances, focusing more on exploring their own musical roots and creative impulses. With time to reflect, in September 2024, Hello Nico released their new EP, \"Plan B: If We Come Back, Let's See the Sea Together,\" with lyrics and music co-written by the band members. The \"Let's See the Sea Together\" tour kicked off in November 2024, traveling to twelve cities. Fans in attendance expressed strong emotion and excitement about the band members' growth and the long-awaited reunion performances. This return to Macau aims to bring fans that long-awaited feeling."
+            },
+            "media": []
+        },
+        {
+            "id": "1768251078638",
+            "image": "uploads/d6f31ac8-ae6e-4084-b6f2-677641463d1b.png",
+            "title": {
+                "cn": "2025-26 TEMPEST ASIA TOUR <As I am> in Macau",
+                "tw": "2025-26 TEMPEST ASIA TOUR <As I am> in Macau",
+                "en": "2025-26 TEMPEST ASIA TOUR <As I am> in Macau"
+            },
+            "date": [
+                "2026-01-24 18:00"
+            ],
+            "price": [
+                "澳門幣MOP $1388 / $888"
+            ],
+            "venue": {
+                "cn": "銀河G Box",
+                "tw": "銀河G Box",
+                "en": "Galaxy G Box"
+            },
+            "desc": {
+                "cn": "以无惧,成长的新样貌,寻找真正的自己,\niE也准备好寻找不一样的TEMPEST了吗?",
+                "tw": "以無懼,成長的新樣貌,尋找真正的自己,\niE也準備好尋找不一樣的TEMPEST了嗎?",
+                "en": "With fearlessness and a new outlook on growth, let's find our true selves. Is iE ready to discover a different kind of wonder?"
+            },
+            "media": []
+        },
+        {
+            "id": "1768244142827",
+            "image": "uploads/dc2cc255-cc21-4507-a67e-64b361503cb6.png",
+            "title": {
+                "cn": "陈小春 生·旦·净·末·丑巡回演唱会-澳门站",
+                "tw": "陳小春 生·旦·淨·末·丑巡迴演唱會-澳門站",
+                "en": "Jordan Chan's \"Sheng, Dan, Jing, Mo, Chou\" World Tour - Macau Station"
+            },
+            "date": [
+                "2026-01-24 19:00"
+            ],
+            "price": [
+                "MOP 1380/ 1080/ 880 / 680 / 480"
+            ],
+            "venue": {
+                "cn": "銀河綜藝館",
+                "tw": "銀河綜藝館",
+                "en": "Galaxy Arena"
+            },
+            "desc": {
+                "cn": "2026年1月24日银河综艺馆开唱，经典歌曲、裸眼3D视效加音乐剧式编排，打破台上台下界限，用歌声讲每个人的角色故事！",
+                "tw": " 2026年1月24日銀河綜藝館開唱，經典歌曲、裸眼3D視效加音樂劇式編排，打破台上台下界限，用歌聲講每個人的角色故事！",
+                "en": "The concert will be held at the Galaxy Variety Center on January 24, 2026. It features classic songs, naked-eye 3D visual effects, and musical-style arrangements, breaking down the boundaries between the stage and the audience, and telling the story of each person's role through songs!"
+            },
+            "media": []
+        },
+        {
+            "id": "1768233188740",
+            "image": "uploads/1768240959156_DylanWang.png",
+            "title": {
+                "cn": "2026王鹤棣D.Party 演唱会中国澳门站",
+                "tw": "2026王鶴棣D.Party 演唱會中國澳門站",
+                "en": "2026 Wang Hedi D.Party Concert - Macau, China"
+            },
+            "date": [
+                "2026-01-17 08:00"
+            ],
+            "price": [
+                "\tMOP 2499 內場站票L/R (包括SOUND CHECK體驗)",
+                "MOP 2199 優選座位區",
+                "MOP 1899 CAT 1 看台區",
+                "MOP 1599 CAT 2看台區",
+                "MOP 999 CAT 3看台區",
+                "MOP 799 CAT 4看台區"
+            ],
+            "venue": {
+                "cn": "銀河綜藝館",
+                "tw": "銀河綜藝館",
+                "en": "Galaxy Arena"
+            },
+            "desc": {
+                "cn": "2026王鹤棣D.Party 演唱会中国澳门站将于1月17日在银河综艺馆震撼来袭。 这将是王鹤棣在澳门的首次演出，“兄棣伙”们，一起享受这场炙热的狂欢派对吧！王鹤棣领衔主演《流星花园》、《苍兰诀》、《以爱为营》和《大奉打更人》等多部热门影视作品而获得无数粉丝。在这次演唱会中，他将展现他作为演员和歌手的双重魅力，演绎多首人气歌曲及新歌，带来充满能量的舞台表演！",
+                "tw": "2026王鶴棣D.Party 演唱會中國澳門站將於1月17日在銀河綜藝館震撼來襲。 這將是王鶴棣在澳門的首次演出，“兄棣伙”們，一起享受這場炙熱的狂歡派對吧！王鶴棣領銜主演《流星花園》、《蒼蘭訣》、《以愛為營》和《大奉打更人》等多部熱門影視作品而獲得無數粉絲。在這次演唱會中，他將展現他作為演員和歌手的雙重魅力，演繹多首人氣歌曲及新歌，帶來充滿能量的舞台表演！",
+                "en": "Wang Hedi's 2026 D.Party Concert in Macau will be held on January 17th at the Galaxy Arena. This will be Wang Hedi's first performance in Macau. Fans, get ready for a high-energy party! Wang Hedi has gained countless fans for his leading roles in numerous popular TV dramas such as *Meteor Garden*, *The Legend of Canglan*, *Love in Action*, and *The Great Feng Night Watchman*. In this concert, he will showcase his dual charm as both an actor and singer, performing many popular hits and new songs, delivering an energetic stage performance!"
             },
             "media": [
                 {
                     "label": "抖音",
-                    "url": "9.74 h@o.dN 07/13 fBT:/ 家人们，王鹤棣澳门演唱会这波操作直接把内娱搅翻了！官宣赵露思当唯一女嘉宾，本该是颜霸联动的狂欢，结果棣欣引力CP粉直接炸锅——大粉晒1250天应援票根宣布脱粉，超话里满屏“苍兰诀滤镜碎了”，甚至有人去工作室抗议要求换嘉宾！# 今日热点榜# 娱乐圈 # 王鹤隶 # 明星 # 赵露思  https://v.douyin.com/1YQk2RilQ0c/ 复制此链接，打开Dou音搜索，直接观看视频！"
+                    "url": "https://v.douyin.com/1YQk2RilQ0c/"
+                },
+                {
+                    "label": "YouTube",
+                    "url": "https://www.youtube.com/shorts/I58wNWXiI1A"
                 }
             ]
-        },
-        {
-            "id": "c1",
-            "date": [
-                "2026-01-15 17:30",
-                "2026-01-14 23:37"
-            ],
-            "artist": {
-                "cn": "陈奕迅",
-                "tw": "陳奕迅",
-                "en": "Eason Chan"
-            },
-            "title": {
-                "cn": "super juniors ",
-                "tw": "super junior",
-                "en": "super junior"
-            },
-            "venue": {
-                "cn": "倫敦人綜藝館",
-                "tw": "倫敦人綜藝館",
-                "en": "The Londoner Arena"
-            },
-            "price": [
-                "588",
-                "788",
-                "988"
-            ],
-            "image": "uploads/1768240966190_SUPERJUNIOR.png",
-            "tags": [
-                "pop"
-            ],
-            "desc": {
-                "cn": "",
-                "tw": "",
-                "en": ""
-            },
-            "media": []
-        },
-        {
-            "id": "c2",
-            "date": "2025-11-05",
-            "artist": {
-                "cn": "西城男孩",
-                "tw": "西城男孩",
-                "en": "Westlife"
-            },
-            "title": {
-                "cn": "The Wild Dreams Tour",
-                "tw": "The Wild Dreams Tour",
-                "en": "The Wild Dreams Tour"
-            },
-            "venue": {
-                "cn": "澳门伦敦人综艺馆",
-                "tw": "澳門倫敦人綜藝館",
-                "en": "The Londoner Arena"
-            },
-            "price": "MOP 688 - 1888",
-            "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&q=80",
-            "tags": [
-                "pop",
-                "international"
-            ],
-            "desc": {
-                "cn": "",
-                "tw": "",
-                "en": ""
-            },
-            "media": []
         }
     ],
     "food": {

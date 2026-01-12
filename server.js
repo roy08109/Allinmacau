@@ -62,7 +62,9 @@ const server = http.createServer((req, res) => {
               const base64Data = content.replace(/^data:image\/\w+;base64,/, "");
               const imgBuffer = Buffer.from(base64Data, 'base64');
               
-              const safeName = Date.now() + '_' + path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '');
+              // Use original filename (sanitized) to avoid creating duplicates with timestamps
+              // If the file exists, it will be overwritten (which seems to be the desired behavior to avoid "copying")
+              const safeName = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '');
               const targetPath = path.join(UPLOAD_DIR, safeName);
               
               fs.writeFile(targetPath, imgBuffer, (err) => {
@@ -77,6 +79,51 @@ const server = http.createServer((req, res) => {
           } catch (e) {
               res.writeHead(400, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({ success: false, message: 'Invalid upload data' }));
+          }
+      });
+      return;
+  }
+
+  // API: Delete File
+  if (req.method === 'POST' && urlPath === '/api/delete-file') {
+      let body = [];
+      req.on('data', chunk => body.push(chunk));
+      req.on('end', () => {
+          try {
+              const buffer = Buffer.concat(body);
+              const { filepath } = JSON.parse(buffer.toString());
+              
+              // Security check: only allow deleting files in uploads/
+              // Prevent directory traversal attacks
+              const safePath = path.normalize(filepath).replace(/^(\.\.[\/\\])+/, '');
+              
+              if (!safePath.startsWith('uploads/') && !safePath.startsWith('uploads\\')) {
+                  res.writeHead(403, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ success: false, message: 'Forbidden: Can only delete files in uploads directory' }));
+                  return;
+              }
+              
+              const fullPath = path.join(PUBLIC_DIR, safePath);
+              
+              if (fs.existsSync(fullPath)) {
+                  fs.unlink(fullPath, (err) => {
+                      if (err) {
+                          console.error('Delete error:', err);
+                          res.writeHead(500, { 'Content-Type': 'application/json' });
+                          res.end(JSON.stringify({ success: false, message: 'Delete failed' }));
+                      } else {
+                          res.writeHead(200, { 'Content-Type': 'application/json' });
+                          res.end(JSON.stringify({ success: true }));
+                      }
+                  });
+              } else {
+                  // File not found is considered success (it's already gone)
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ success: true, message: 'File not found, but okay' }));
+              }
+          } catch (e) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success: false, message: e.message }));
           }
       });
       return;

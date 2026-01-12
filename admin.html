@@ -97,7 +97,7 @@
                                             <span class="text-xs font-medium">暫無圖片</span>
                                         </div>
                                         <!-- Upload Overlay -->
-                                        <label class="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center cursor-pointer transition-all backdrop-blur-[2px]">
+                                        <label class="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center cursor-pointer transition-all backdrop-blur-[2px]" @click.stop>
                                             <div class="text-white flex flex-col items-center gap-2 transform translate-y-2 group-hover/img:translate-y-0 transition-transform">
                                                 <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
                                                     <i class="ph-bold ph-upload-simple text-xl"></i>
@@ -177,15 +177,35 @@
                                         </div>
                                     </div>
 
-                                    <!-- Introduction (Description) -->
-                                    <div class="space-y-1.5">
-                                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">簡介 (簡中)</label>
-                                        <textarea 
-                                            v-model="item.desc.cn" 
-                                            rows="3" 
-                                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all resize-none shadow-sm"
-                                            placeholder="請輸入活動/項目簡介..."
-                                        ></textarea>
+                                    <!-- Introduction (Description) - Multi-language -->
+                                    <div class="space-y-4">
+                                        <div class="space-y-1.5">
+                                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">簡介 (簡中)</label>
+                                            <textarea 
+                                                v-model="item.desc.cn" 
+                                                rows="3" 
+                                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all resize-none shadow-sm"
+                                                placeholder="請輸入簡體中文簡介..."
+                                            ></textarea>
+                                        </div>
+                                        <div class="space-y-1.5">
+                                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">簡介 (繁中)</label>
+                                            <textarea 
+                                                v-model="item.desc.tw" 
+                                                rows="3" 
+                                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all resize-none shadow-sm"
+                                                placeholder="請輸入繁體中文簡介..."
+                                            ></textarea>
+                                        </div>
+                                        <div class="space-y-1.5">
+                                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Introduction (English)</label>
+                                            <textarea 
+                                                v-model="item.desc.en" 
+                                                rows="3" 
+                                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all resize-none shadow-sm"
+                                                placeholder="Enter English introduction..."
+                                            ></textarea>
+                                        </div>
                                     </div>
 
                                     <!-- Specific Fields: Concerts -->
@@ -231,7 +251,7 @@
                                             
                                             <div class="space-y-2 flex-1">
                                                 <div v-for="(date, i) in ensureArray(item.date)" :key="i" class="flex items-center gap-2">
-                                                    <div class="flex-1 flex flex-col sm:flex-row gap-2">
+                                                    <div class="flex-1 flex flex-col sm:flex-row gap-2 items-center">
                                                         <div class="relative w-32"> <!-- Fixed width for Date -->
                                                             <input type="date" 
                                                                 :value="parseDateTime(date).date" 
@@ -239,6 +259,9 @@
                                                                 class="w-full bg-white border border-blue-200 text-blue-900 text-xs px-2 py-2 rounded-lg shadow-sm font-medium focus:ring-2 focus:ring-blue-100 outline-none"
                                                             >
                                                         </div>
+                                                        <span class="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-1 rounded min-w-[3em] text-center">
+                                                            {{ getWeekDay(parseDateTime(date).date) }}
+                                                        </span>
                                                         <div class="relative w-32"> <!-- Fixed width for Time -->
                                                             <input type="time" 
                                                                 :value="parseDateTime(date).time" 
@@ -259,7 +282,7 @@
                                                             <input type="date" ref="newDateInput" class="w-full bg-white/50 border border-blue-200 border-dashed rounded-lg px-2 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all">
                                                         </div>
                                                         <div class="relative w-32">
-                                                            <input type="time" ref="newTimeInput" class="w-full bg-white/50 border border-blue-200 border-dashed rounded-lg px-2 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all">
+                                                            <input type="time" ref="newTimeInput" class="w-full bg-white/50 border border-blue-200 border-dashed rounded-lg px-2 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all" value="20:00">
                                                         </div>
                                                     </div>
                                                     <button @click="addDateTimeSafe($event, item)" class="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center justify-center flex-shrink-0">
@@ -351,6 +374,7 @@
 
                 const venueOptions = [
                     { cn: '銀河綜藝館', tw: '銀河綜藝館', en: 'Galaxy Arena' },
+                    { cn: '銀河G Box', tw: '銀河G Box', en: 'Galaxy G Box' },
                     { cn: '威尼斯人綜藝館', tw: '威尼斯人綜藝館', en: 'Cotai Arena' },
                     { cn: '倫敦人綜藝館', tw: '倫敦人綜藝館', en: 'The Londoner Arena' },
                     { cn: '新濠影匯綜藝館', tw: '新濠影匯綜藝館', en: 'Studio City Event Center' },
@@ -518,13 +542,17 @@
                     container.unshift(newItem);
                 };
 
-                const deleteItem = (index) => {
-                    if(!confirm('確定刪除此項目嗎？')) return;
+                const deleteItem = async (index) => {
+                    if(!confirm('確定刪除此項目嗎？(刪除後將自動保存)')) return;
+                    
                     if (Array.isArray(data.value[currentSection.value])) {
                         data.value[currentSection.value].splice(index, 1);
                     } else {
                         data.value[currentSection.value].items.splice(index, 1);
                     }
+
+                    // Auto save to sync with homepage immediately
+                    await saveData();
                 };
 
                 const parseDateTime = (str) => {
@@ -624,10 +652,17 @@
                         return;
                     }
 
+                    let finalUrl = url;
+                    // Auto-extract URL from pasted share text (e.g. Douyin, TikTok)
+                    const urlMatch = url.match(/(https?:\/\/[^\s]+)/);
+                    if (urlMatch) {
+                        finalUrl = urlMatch[0];
+                    }
+
                     if (!Array.isArray(item.media)) {
                         item.media = item.media ? [item.media] : [];
                     }
-                    item.media.push({ label, url });
+                    item.media.push({ label, url: finalUrl });
 
                     // Clear inputs
                     if (labelInput) labelInput.value = '';
@@ -654,9 +689,20 @@
                 };
 
                 const removeArrayItem = (item, field, index) => {
+                    if(!confirm('確定刪除此項目嗎？')) return;
                     if (Array.isArray(item[field])) {
                         item[field].splice(index, 1);
                     }
+                };
+
+                // Helper: Read file as Base64 (No Compression)
+                const readFileAsBase64 = (file) => {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = (error) => reject(error);
+                    });
                 };
 
                 // Image Upload
@@ -665,15 +711,39 @@
                     if (!file) return;
                     
                     try {
-                        showMessage('success', '處理圖片中...');
-                        const compressed = await compressImage(file);
+                        // Keep track of the old image to delete it later
+                        const oldImage = item.image;
+
+                        showMessage('success', '上傳中...');
+                        
+                        // Use original file (no compression)
+                        const content = await readFileAsBase64(file);
+                        
                         const res = await fetch('/api/upload', {
                             method: 'POST',
-                            body: JSON.stringify({ filename: file.name, content: compressed })
+                            body: JSON.stringify({ filename: file.name, content: content })
                         });
                         const json = await res.json();
                         if(json.success) {
                             item.image = json.url;
+                            
+                            // Only delete old image if the filename is DIFFERENT
+                            // If we overwrite the same file, we don't need to delete (and shouldn't)
+                            // Since we removed timestamp, json.url will be 'uploads/filename.ext'
+                            // If oldImage was 'uploads/filename.ext', it's the same file.
+                            
+                            if (oldImage && oldImage !== json.url && (oldImage.startsWith('uploads/') || oldImage.startsWith('uploads\\'))) {
+                                try {
+                                    console.log('Deleting old image:', oldImage);
+                                    await fetch('/api/delete-file', {
+                                        method: 'POST',
+                                        body: JSON.stringify({ filepath: oldImage })
+                                    });
+                                } catch (delErr) {
+                                    console.warn('Failed to delete old image:', delErr);
+                                }
+                            }
+
                             showMessage('success', '上傳完成');
                         } else throw new Error(json.message);
                     } catch(err) {
@@ -791,6 +861,15 @@
                     }
                 };
 
+                const getWeekDay = (dateStr) => {
+                    if (!dateStr) return '';
+                    const days = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+                    const date = new Date(dateStr);
+                    // Check if date is valid
+                    if (isNaN(date.getTime())) return '';
+                    return days[date.getDay()];
+                };
+
                 return {
                     loading, saving, message,
                     currentSection, currentSectionLabel, sections, listData,
@@ -802,7 +881,8 @@
                     ensureVenue,
                     venueOptions,
                     mediaIcons,
-                    setMediaLabel
+                    setMediaLabel,
+                    getWeekDay
                 };
             }
         }).mount('#app');
